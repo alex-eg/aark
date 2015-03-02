@@ -6,3 +6,4 @@
 
 (defstruct block
   (:include rect))
+
