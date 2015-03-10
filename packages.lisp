@@ -5,12 +5,3 @@
   (:use :cl)
   (:export
    #:start))
-
-(defpackage #:aark.state
-  (:documentation "Pacakge for game states and related functions")
-  (:use :cl)
-  (:export #:init
-           #:process-input
-           #:update
-           #:render
-           #:cleanup))
