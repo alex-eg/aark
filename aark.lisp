@@ -23,21 +23,14 @@
 
 
 (defun init ()
-  (cffi:with-foreign-string (p "/home/ex/pro/lisp/aark/font.bmp")
-    (let ((b (sdl2:load-bmp p)))
-      (setf (gethash 'font *storage*)
-            b)))
+  (setf (gethash 'font *storage*)
+        (init-font "/home/ex/pro/lisp/aark/font2.bmp"
+                   "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
+                   40 40))
   (setf *idle-fun* 'menu-idle)
   (setf *process-input-fun* 'menu-input))
 
 ;;; Menu
-(defun get-font-symbol (num)
-  (multiple-value-bind (col row)
-      (floor num 6)
-    (sdl2:make-rect (* 10 row)
-                    (* 10 col)
-                    10
-                    10)))
 
 (defun menu-init ()
   (unless (gethash 'menu *storage* nil)
@@ -60,31 +53,12 @@
       (sdl2-ffi.accessors:sdl-surface.format surf)
       128 200 255 255))
 
-    (sdl2:blit-surface-scaled font (get-font-symbol 16)
-                              surf (sdl2:make-rect 10 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 0)
-                              surf (sdl2:make-rect 30 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 25)
-                              surf (sdl2:make-rect 50 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 0)
-                              surf (sdl2:make-rect 70 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 54)
-                              surf (sdl2:make-rect 90 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 16)
-                              surf (sdl2:make-rect 110 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 9)
-                              surf (sdl2:make-rect 130 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 18)
-                              surf (sdl2:make-rect 150 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 29)
-                              surf (sdl2:make-rect 170 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 11)
-                              surf (sdl2:make-rect 190 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 0)
-                              surf (sdl2:make-rect 210 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 54)
-                              surf (sdl2:make-rect 230 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 52)
-                              surf (sdl2:make-rect 250 10 20 20))
-    (sdl2:blit-surface-scaled font (get-font-symbol 8)
-                              surf (sdl2:make-rect 270 10 20 20))))
+    (write-on-surface "СТАРТ" font surf :centered t :x 640 :y 300
+                      :cell-w 40
+                      :cell-h 40)
+    (write-on-surface "НАСТРОЙКИ" font surf :centered t :x 640 :y 340
+                      :cell-w 40
+                      :cell-h 40)
+    (write-on-surface "ВЫХОД" font surf :x 640 :centered t :y 430
+                      :cell-w 40
+                      :cell-h 40)))
