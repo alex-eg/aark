@@ -39,14 +39,21 @@
                     (font-cell-w font)
                     (font-cell-h font))))
 
-(defmacro write-on-surface (text font dest x y
-                            &key (blit-func ''sdl2:blit-surface-scaled)
+(defmacro write-on-surface (text font dest
+                            &key
+                              (centered nil)
+                              (x 0) (y 0)
+                              (blit-func ''sdl2:blit-surface-scaled)
                               (cell-w `(font-cell-w ,font))
                               (cell-h `(font-cell-h ,font)))
   (let ((text-list (loop for c across text
                       collect c))
         (char (gensym))
-        (i (gensym)))
+        (i (gensym))
+        (new-x (if centered
+                   (/ (- x (* cell-w (length text)))
+                      2)
+                   x)))
     `(loop for ,char in ',text-list
         count ,char into ,i
         do (funcall
@@ -56,5 +63,5 @@
                              ,font)
             ,dest
             (sdl2:make-rect 
-             (+ ,x (* ,cell-w (1- ,i))) ,y
+             (+ ,new-x (* ,cell-w (1- ,i))) ,y
              ,cell-w ,cell-h)))))
