@@ -19,6 +19,13 @@
     (let ((font-surface (sdl2:load-bmp foreign-string-path)))
       (if (autowrap:wrapper-null-p font-surface)
           (error 'load-font-failed :path path-to-file))
+      (sdl2-ffi.functions:sdl-set-color-key
+       font-surface
+       sdl2-ffi:+true+
+       (sdl2-ffi.functions:sdl-map-rgb
+        (sdl2-ffi.accessors:sdl-surface.format font-surface)
+        255 255 255))
+
       (let* ((width (sdl2-ffi.accessors:sdl-surface.w font-surface))
              (height (sdl2-ffi.accessors:sdl-surface.h font-surface))
              (rows (floor height cell-h))
