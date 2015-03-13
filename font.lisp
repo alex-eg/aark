@@ -9,7 +9,10 @@
   cell-h)
 
 (define-condition load-font-failed (error)
-  ((path :initarg :path :reader path)))
+  ((path :initarg :path :reader path))
+  (:report (lambda (condition stream)
+             (format stream "Failed loading font bmp: ~S~%"
+                     (sdl2-ffi.functions:sdl-get-error)))))
 
 (defun init-font (path-to-file alphabet cell-w cell-h)
   (cffi:with-foreign-string (foreign-string-path path-to-file)
