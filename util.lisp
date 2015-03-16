@@ -31,3 +31,12 @@
 (export 'blit-surface-scaled)
 (export 'surface-rect)
 
+(in-package :aark)
+
+(defmacro with-state-storage ((storage-hash &rest entries) &body body)
+  (let* ((storage-hash-var (gensym))
+         (entries-list (loop for e in entries
+                          collect `(,e (gethash ',e ,storage-hash-var)))))
+    `(let* ((,storage-hash-var (gethash ',storage-hash *storage*))
+            ,@entries-list)
+       ,@body)))
