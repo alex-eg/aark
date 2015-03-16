@@ -19,7 +19,15 @@
     (sdl2-ffi.accessors:sdl-surface.format surface)
     r g b a)))
 
+(defun surface-rect (surface)
+  (sdl2:make-rect
+   0 0
+   (sdl2-ffi.accessors:sdl-surface.w surface)
+   (sdl2-ffi.accessors:sdl-surface.h surface)))
+
 (export 'fill-rect)
 (export 'get-window-surface)
 (export 'blit-surface)
 (export 'blit-surface-scaled)
+(export 'surface-rect)
+
