@@ -17,7 +17,20 @@
   (cond ((sdl2:scancode=
           (sdl2:scancode-value keysym)
           :scancode-escape)
-         (sdl2:push-event :quit))))
+         (sdl2:push-event :quit))
+        ((sdl2:scancode=
+          (sdl2:scancode-value keysym)
+          :scancode-return)
+         (let ((choise (gethash 'current-choise
+                                (gethash 'menu *storage*))))
+           (cond ((= choise 2)
+                  (sdl2:push-event :quit))
+                 ((= choise 1)
+                  nil)
+                 ((= choise 0)
+                  (game-init)
+                  (setf *idle-fun* 'game-idle)
+                  (setf *process-input-fun* 'game-input)))))))
 
 (defun menu-keydown (win keysym)
   (let ((menu-hash (gethash 'menu *storage*)))
