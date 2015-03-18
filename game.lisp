@@ -14,6 +14,7 @@
      (lambda (pair)
        (setf (gethash (car pair) game-hash) (cdr pair)))
      `((lifes  . 3)
+       (running . t)
        (scores . 0)
        (bricks . ,(level-1))
        (brick-sprite . ,(sdl2:load-bmp "/home/ex/pro/lisp/aark/brick.bmp"))
