@@ -17,15 +17,16 @@
        (running . t)
        (scores . 0)
        (bricks . ,(level-1))
-       (brick-sprite . ,(sdl2:load-bmp "/home/ex/pro/lisp/aark/brick.bmp"))
+       (brick-sprite . ,(sdl2:load-bmp "/home/ex/pro/lisp/aark/kirpich.bmp"))
        (board . ,(make-board
                   :sprite
                   (sdl2:load-bmp "/home/ex/pro/lisp/aark/board.bmp")
                   :length 2))
-       (ball . ,(make-ball
-                 :sprite
-                 (sdl2:load-bmp "/home/ex/pro/lisp/aark/ball.bmp")
-                 :x 320 :y 240 :dx -1.0 :dy 1.0))
+       (balls . ,(list
+                  (make-ball
+                   :sprite
+                   (sdl2:load-bmp "/home/ex/pro/lisp/aark/ball.bmp")
+                   :x 320 :y 240 :dx -1.0 :dy 1.0)))
        (bonuses . '())))))
 
 (defun level-1 ()
