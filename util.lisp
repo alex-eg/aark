@@ -25,11 +25,20 @@
    (sdl2-ffi.accessors:sdl-surface.w surface)
    (sdl2-ffi.accessors:sdl-surface.h surface)))
 
+(defun draw-sprite (surface sprite x y)
+  (let ((w (sdl2-ffi.accessors:sdl-surface.w sprite))
+        (h (sdl2-ffi.accessors:sdl-surface.h sprite)))
+    (sdl2:blit-surface sprite
+                       (sdl2:surface-rect sprite)
+                       surface
+                       (sdl2:make-rect x y w h))))
+
 (export 'fill-rect)
 (export 'get-window-surface)
 (export 'blit-surface)
 (export 'blit-surface-scaled)
 (export 'surface-rect)
+(export 'draw-sprite)
 
 (in-package :aark)
 
