@@ -44,20 +44,23 @@
        bricks
        ball
        board)
-    (let ((surf (sdl2:get-window-surface win))
-          (bw (sdl2-ffi.accessors:sdl-surface.w brick-sprite))
-          (bh (sdl2-ffi.accessors:sdl-surface.h brick-sprite)))
+    (let* ((surf (sdl2:get-window-surface win))
+           (ball-sprite (ball-sprite ball))
+           (bw (sdl2-ffi.accessors:sdl-surface.w brick-sprite))
+           (bh (sdl2-ffi.accessors:sdl-surface.h brick-sprite)))
       (sdl2:fill-rect surf 0 0 640 480
                       0 0 0 255)
       (loop
          for b in bricks
-         do (sdl2:blit-surface
-             brick-sprite
-             (sdl2:surface-rect brick-sprite)
-             surf
-             (sdl2:make-rect (+ 120 (* (car b) bw))
-                             (+ 40 (* (cdr b) bh))
-                             bw bh))))))
+         do (sdl2:draw-sprite surf
+                              brick-sprite
+                              (+ 120 (* (car b) bw))
+                              (+ 40 (* (cdr b) bh))))
+      (sdl2:draw-sprite surf
+                        ball-sprite
+                        (ball-x ball)
+                        (ball-y ball)))))
+
 
 (defun game-input (win direction keysym)
   (if (eq direction :keydown)
