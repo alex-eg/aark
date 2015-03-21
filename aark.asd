@@ -5,6 +5,7 @@
                :cffi)
   :components ((:file "packages")
                (:file "game")
+               (:file "game-menu")
                (:file "menu")
                (:file "util")
                (:file "font")
