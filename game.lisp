@@ -4,7 +4,7 @@
   x y dx dy sprite)
 
 (defstruct board
-  length sprite)
+  length x dx base-length r g b a)
 
 (defun game-init ()
   (unless (gethash 'game *storage* nil)
@@ -19,9 +19,10 @@
        (bricks . ,(level-1))
        (brick-sprite . ,(sdl2:load-bmp "/home/ex/pro/lisp/aark/kirpich.bmp"))
        (board . ,(make-board
-                  :sprite
-                  (sdl2:load-bmp "/home/ex/pro/lisp/aark/board.bmp")
-                  :length 2))
+                  :base-length 20
+                  :length 2
+                  :x 40 :dx 0
+                  :r 60 :g 150 :b 90 :a 255))
        (balls . ,(list
                   (make-ball
                    :sprite
