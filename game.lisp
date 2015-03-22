@@ -38,6 +38,28 @@
           for j from 0 to 9
           collect (cons i j))))
 
+(defun game-update (win)
+  (with-state-storage
+      (game
+       brick-sprite
+       bricks
+       ball
+       board
+       running)
+    (when running
+      (setf (board-x board)
+            (+ (board-x board)
+               (board-dx board)))
+      (setf (board-dx board) 0)
+      (cond ((> (board-x board)
+                (- 640 (* (board-length board)
+                          (board-base-length board))))
+             (setf (board-x board)
+                   (- 640 (* (board-length board)
+                             (board-base-length board)))))
+            ((< (board-x board) 0)
+             (setf (board-x board) 0))))))
+
 (defun game-idle (win)
   (with-state-storage
       (game
