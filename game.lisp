@@ -82,10 +82,36 @@
       (sdl2:draw-sprite surf
                         ball-sprite
                         (ball-x ball)
-                        (ball-y ball)))))
+                        (ball-y ball))
+      (sdl2:fill-rect surf
+                      (board-x board)
+                      (- 480 20)
+                      (* (board-length board)
+                         (board-base-length board))
+                      10
+                      (board-r board) (board-g board)
+                      (board-b board) (board-a board)))))
 
 
 (defun game-input (win direction keysym)
   (if (eq direction :keydown)
-      (menu-keydown win keysym)
-      (menu-keyup win keysym)))
+      (game-keydown win keysym)
+      (game-keyup win keysym)))
+
+(defun game-keyup (win keysym))
+
+(defun game-keydown (win keysym)
+  (let ((game (gethash 'game *storage*)))
+    (cond ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-escape)
+           (setf (gethash 'running game) nil)
+           (show-game-menu))
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-left)
+           (setf (board-dx (gethash 'board game)) -10))
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-right)
+           (setf (board-dx (gethash 'board game)) 10)))))
