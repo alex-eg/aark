@@ -66,8 +66,8 @@
         (char (gensym))
         (i (gensym))
         (new-x (if centered
-                   (/ (- x (* cell-w (length text)))
-                      2)
+                   `(/ (- ,x (* ,cell-w (length ,text)))
+                     2)
                    x)))
     `(loop for ,char in ',text-list
         count ,char into ,i
