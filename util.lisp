@@ -12,12 +12,21 @@
                                             dst dstrect))
 
 (defun fill-rect (surface x y w h r g b a)
-  (sdl2-ffi.functions:sdl-fill-rect
-   surface
-   (sdl2:make-rect x y w h)
-   (sdl2-ffi.functions:sdl-map-rgba
-    (sdl2-ffi.accessors:sdl-surface.format surface)
-    r g b a)))
+  (let ((blend-surface (sdl2:create-rgb-surface w h 32)))
+    (sdl2-ffi.functions:sdl-set-surface-blend-mode
+     blend-surface
+     sdl2-ffi:+sdl-blendmode-blend+)
+    (sdl2-ffi.functions:sdl-fill-rect
+     blend-surface
+     (sdl2:make-rect 0 0 w h)
+     (sdl2-ffi.functions:sdl-map-rgba
+      (sdl2-ffi.accessors:sdl-surface.format surface)
+      r g b a))
+    (sdl2:blit-surface
+     blend-surface
+     (sdl2:make-rect 0 0 w h)
+     surface
+     (sdl2:make-rect x y w h))))
 
 (defun surface-rect (surface)
   (sdl2:make-rect
