@@ -14,7 +14,8 @@
              (format stream "Failed loading font bmp: ~S~%"
                      (sdl2-ffi.functions:sdl-get-error)))))
 
-(defun init-font (path-to-file alphabet cell-w cell-h)
+(defun init-font (path-to-file alphabet cell-w cell-h
+                  &key (r 0) (g 0) (b 0))
   (cffi:with-foreign-string (foreign-string-path path-to-file)
     (let ((font-surface (sdl2:load-bmp foreign-string-path)))
       (if (autowrap:wrapper-null-p font-surface)
@@ -25,6 +26,10 @@
        (sdl2-ffi.functions:sdl-map-rgb
         (sdl2-ffi.accessors:sdl-surface.format font-surface)
         255 255 255))
+      ;; failed attempt to replace font color
+      (sdl2-ffi.functions:sdl-set-surface-color-mod
+       font-surface
+       r g b)
 
       (let* ((width (sdl2-ffi.accessors:sdl-surface.w font-surface))
              (height (sdl2-ffi.accessors:sdl-surface.h font-surface))
