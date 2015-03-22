@@ -6,7 +6,7 @@
   (unless (gethash 'menu *storage* nil)
     (setf (gethash 'menu *storage*) (make-hash-table)))
   (let ((menu-hash (gethash 'menu *storage*)))
-    (setf (gethash 'current-choise menu-hash) 2)))
+    (setf (gethash 'current-choise menu-hash) 0)))
 
 (defun menu-input (win direction keysym)
   (if (eq direction :keydown)
@@ -29,6 +29,7 @@
                   nil)
                  ((= choise 0)
                   (game-init)
+                  (setf *update-fun* 'game-update)
                   (setf *idle-fun* 'game-idle)
                   (setf *process-input-fun* 'game-input)))))))
 
@@ -61,9 +62,7 @@
     (write-on-surface "СТАРТ" font surf
                       :centered t
                       :x 640
-                      :y 300
-                      :cell-w 40
-                      :cell-h 40)
+                      :y 300)
     (if (= choise 1)
         (sdl2:fill-rect surf 60 345 520 35
                         180 95 215 255)
@@ -72,9 +71,7 @@
     (write-on-surface "ВЫСОКИЕ ОЧКИ" font surf
                       :centered t
                       :x 640
-                      :y 340
-                      :cell-w 40
-                      :cell-h 40)
+                      :y 340)
     (if (= choise 2)
         (sdl2:fill-rect surf 60 385 520 35
                         180 95 215 255)
@@ -83,6 +80,4 @@
     (write-on-surface "ВЫХОД" font surf
                       :centered t
                       :x 640
-                      :y 380
-                      :cell-w 40
-                      :cell-h 40)))
+                      :y 380)))
