@@ -3,6 +3,7 @@
 (defvar *process-input-fun* (lambda (&rest rest)
                               (sdl2:push-event :quit)))
 (defvar *idle-fun* (lambda (&rest rest)))
+(defvar *update-fun* (lambda (&rest rest)))
 (defvar *storage* (make-hash-table))
 
 (defun start ()
@@ -22,6 +23,7 @@
          (funcall *process-input-fun* win :keyup keysym))
         (:idle
          ()
+         (funcall *update-fun* win)
          (funcall *idle-fun* win)
          (sdl2:update-window win))
         (:quit () t)))))
