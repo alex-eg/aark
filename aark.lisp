@@ -33,7 +33,7 @@
   (setf (gethash 'font *storage*)
         (init-font "/home/ex/pro/lisp/aark/font3.bmp"
                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
-                   40 40 :r 250 :g 160 :b 20))
+                   40 40 :r 0 :g 0 :b 0))
   (sdl2-ffi.functions:sdl-set-surface-blend-mode
    (sdl2-ffi.functions:sdl-get-window-surface win)
    sdl2-ffi:+sdl-blendmode-blend+)
