@@ -31,7 +31,7 @@
 
 (defun init (win)
   (setf (gethash 'font *storage*)
-        (init-font "/home/ex/pro/lisp/aark/font2.bmp"
+        (init-font "/home/ex/pro/lisp/aark/font3.bmp"
                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
                    40 40))
   (setf *idle-fun* 'menu-idle)
