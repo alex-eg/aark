@@ -33,6 +33,6 @@
   (setf (gethash 'font *storage*)
         (init-font "/home/ex/pro/lisp/aark/font3.bmp"
                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
-                   40 40))
+                   40 40 :r 250 :g 160 :b 20))
   (setf *idle-fun* 'menu-idle)
   (setf *process-input-fun* 'menu-input))
