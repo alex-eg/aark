@@ -12,7 +12,12 @@
                                             dst dstrect))
 
 (defun fill-rect (surface x y w h r g b a)
-  (let ((blend-surface (sdl2:create-rgb-surface w h 32)))
+  (let ((blend-surface (sdl2:create-rgb-surface
+                        w h 32
+                        :r-mask #x00FF0000
+                        :g-mask #x0000FF00
+                        :b-mask #x000000FF
+                        :a-mask #xFF000000)))
     (sdl2-ffi.functions:sdl-set-surface-blend-mode
      blend-surface
      sdl2-ffi:+sdl-blendmode-blend+)
