@@ -70,8 +70,7 @@
                             :r-mask #xFF000000
                             :g-mask #x00FF0000
                             :b-mask #x0000FF00
-                            :a-mask #x000000FF
-                            )))
+                            :a-mask #x000000FF)))
        ,@body
        (sdl2:blit-surface ',surf-symbol nil ,win-surf nil)
        (sdl2:free-surface ',surf-symbol))))
