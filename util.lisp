@@ -14,10 +14,10 @@
 (defun fill-rect (surface x y w h r g b a)
   (let ((blend-surface (sdl2:create-rgb-surface
                         w h 32
-                        :r-mask #x00FF0000
-                        :g-mask #x0000FF00
-                        :b-mask #x000000FF
-                        :a-mask #xFF000000)))
+                        :r-mask #xFF000000
+                        :g-mask #x00FF0000
+                        :b-mask #x0000FF00
+                        :a-mask #x000000FF)))
     (sdl2-ffi.functions:sdl-set-surface-blend-mode
      blend-surface
      sdl2-ffi:+sdl-blendmode-blend+)
@@ -31,7 +31,8 @@
      blend-surface
      (sdl2:make-rect 0 0 w h)
      surface
-     (sdl2:make-rect x y w h))))
+     (sdl2:make-rect x y w h))
+    (sdl2:free-surface blend-surface)))
 
 (defun surface-rect (surface)
   (sdl2:make-rect
@@ -56,6 +57,24 @@
 (export 'draw-sprite)
 
 (in-package :aark)
+
+(defmacro with-draw-to-win-surface ((win surf-symbol) &body body)
+  (let ((win-surf (gensym)))
+    `(let* ((,win-surf (sdl2:get-window-surface ,win))
+            (',surf-symbol (sdl2:create-rgb-surface
+                            (sdl2-ffi.accessors:sdl-surface.w
+                             ,win-surf)
+                            (sdl2-ffi.accessors:sdl-surface.h
+                             ,win-surf)
+                            32
+                            :r-mask #xFF000000
+                            :g-mask #x00FF0000
+                            :b-mask #x0000FF00
+                            :a-mask #x000000FF
+                            )))
+       ,@body
+       (sdl2:blit-surface ',surf-symbol nil ,win-surf nil)
+       (sdl2:free-surface ',surf-symbol))))
 
 (defmacro with-state-storage ((storage-hash &rest entries) &body body)
   (let* ((storage-hash-var (gensym))
