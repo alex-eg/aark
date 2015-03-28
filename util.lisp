@@ -61,7 +61,7 @@
 (defmacro with-draw-to-win-surface ((win surf-symbol) &body body)
   (let ((win-surf (gensym)))
     `(let* ((,win-surf (sdl2:get-window-surface ,win))
-            (',surf-symbol (sdl2:create-rgb-surface
+            (,surf-symbol (sdl2:create-rgb-surface
                             (sdl2-ffi.accessors:sdl-surface.w
                              ,win-surf)
                             (sdl2-ffi.accessors:sdl-surface.h
@@ -72,8 +72,8 @@
                             :b-mask #x0000FF00
                             :a-mask #x000000FF)))
        ,@body
-       (sdl2:blit-surface ',surf-symbol nil ,win-surf nil)
-       (sdl2:free-surface ',surf-symbol))))
+       (sdl2:blit-surface ,surf-symbol nil ,win-surf nil)
+       (sdl2:free-surface ,surf-symbol))))
 
 (defmacro with-state-storage ((storage-hash &rest entries) &body body)
   (let* ((storage-hash-var (gensym))
