@@ -51,33 +51,33 @@
 (defun menu-idle (win)
   (let* ((menu-hash (gethash 'menu *storage*))
          (font (gethash 'font *storage*))
-         (surf (sdl2:get-window-surface win))
          (choise (gethash 'current-choise menu-hash)))
-    (sdl2:fill-rect surf 0 0 640 480 83 3 116 255)
-    (if (= choise 0)
-        (sdl2:fill-rect surf 60 305 520 35
-                        180 95 215 255)
-        (sdl2:fill-rect surf 60 305 520 35
-                        110 44 138 255))
-    (write-on-surface "СТАРТ" font surf
-                      :centered t
-                      :x 640
-                      :y 300)
-    (if (= choise 1)
-        (sdl2:fill-rect surf 60 345 520 35
-                        180 95 215 255)
-        (sdl2:fill-rect surf 60 345 520 35
-                        110 44 138 255))
-    (write-on-surface "ВЫСОКИЕ ОЧКИ" font surf
-                      :centered t
-                      :x 640
-                      :y 340)
-    (if (= choise 2)
-        (sdl2:fill-rect surf 60 385 520 35
-                        180 95 215 255)
-        (sdl2:fill-rect surf 60 385 520 35
-                        110 44 138 255))
-    (write-on-surface "ВЫХОД" font surf
-                      :centered t
-                      :x 640
-                      :y 380)))
+    (with-draw-to-win-surface (win surf)
+      (sdl2:fill-rect surf 0 0 640 480 83 3 116 255)
+      (if (= choise 0)
+          (sdl2:fill-rect surf 60 305 520 35
+                          180 95 215 255)
+          (sdl2:fill-rect surf 60 305 520 35
+                          110 44 138 255))
+      (write-on-surface "СТАРТ" font surf
+                        :centered t
+                        :x 640
+                        :y 300)
+      (if (= choise 1)
+          (sdl2:fill-rect surf 60 345 520 35
+                          180 95 215 255)
+          (sdl2:fill-rect surf 60 345 520 35
+                          110 44 138 255))
+      (write-on-surface "ВЫСОКИЕ ОЧКИ" font surf
+                        :centered t
+                        :x 640
+                        :y 340)
+      (if (= choise 2)
+          (sdl2:fill-rect surf 60 385 520 35
+                          180 95 215 255)
+          (sdl2:fill-rect surf 60 385 520 35
+                          110 44 138 255))
+      (write-on-surface "ВЫХОД" font surf
+                        :centered t
+                        :x 640
+                        :y 380))))
