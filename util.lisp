@@ -63,15 +63,15 @@
   (let ((win-surf (gensym)))
     `(let* ((,win-surf (sdl2:get-window-surface ,win))
             (,surf-symbol (sdl2:create-rgb-surface
-                            (sdl2-ffi.accessors:sdl-surface.w
-                             ,win-surf)
-                            (sdl2-ffi.accessors:sdl-surface.h
-                             ,win-surf)
-                            32
-                            :r-mask #xFF000000
-                            :g-mask #x00FF0000
-                            :b-mask #x0000FF00
-                            :a-mask #x000000FF)))
+                           (sdl2-ffi.accessors:sdl-surface.w
+                            ,win-surf)
+                           (sdl2-ffi.accessors:sdl-surface.h
+                            ,win-surf)
+                           32
+                           :r-mask #xFF000000
+                           :g-mask #x00FF0000
+                           :b-mask #x0000FF00
+                           :a-mask #x000000FF)))
        ,@body
        (sdl2:blit-surface ,surf-symbol nil ,win-surf nil)
        (sdl2:free-surface ,surf-symbol))))
