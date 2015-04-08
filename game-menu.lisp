@@ -54,7 +54,7 @@
                         (setf *process-input-fun* 'menu-input)
                         (menu-init))))
                  ((= choise 0)
-                  (setf (gethash 'runnin (gethash 'game *storage*)) t)
+                  (setf (gethash 'running (gethash 'game *storage*)) t)
                   (setf *update-fun* 'game-update)
                   (setf *idle-fun* 'game-idle)
                   (setf *process-input-fun* 'game-input)))))))
