@@ -28,7 +28,10 @@
                    :sprite
                    (sdl2:load-bmp "/home/ex/pro/lisp/aark/ball.bmp")
                    :x 320 :y 240 :dx -1.0 :dy 1.0)))
-       (bonuses . '())))))
+       (bonuses . '()))))
+  (with-state-storage (game
+                       balls)
+    (start-ball (car balls))))
 
 (defun level-1 ()
   (loop
@@ -43,36 +46,68 @@
       (game
        brick-sprite
        bricks
-       ball
+       balls
        board
        running)
     (when running
-      (setf (board-x board)
-            (+ (board-x board)
-               (board-dx board)))
-      (setf (board-dx board) 0)
-      (cond ((> (board-x board)
-                (- 640 (* (board-length board)
-                          (board-base-length board))))
-             (setf (board-x board)
-                   (- 640 (* (board-length board)
-                             (board-base-length board)))))
-            ((< (board-x board) 0)
-             (setf (board-x board) 0))))))
+      (update-board board)
+      (mapcar #'update-ball balls))))
+
+(defun update-board (board)
+  (setf (board-x board)
+        (+ (board-x board)
+           (board-dx board)))
+  (setf (board-dx board) 0)
+  (cond ((> (board-x board)
+            (- 640 (* (board-length board)
+                      (board-base-length board))))
+         (setf (board-x board)
+               (- 640 (* (board-length board)
+                         (board-base-length board)))))
+        ((< (board-x board) 0)
+         (setf (board-x board) 0))))
+
+(defun update-ball (ball)
+  (let* ((dx (ball-dx ball))
+         (dy (ball-dy ball))
+         (x (+ (ball-x ball) dx))
+         (y (+ (ball-y ball) dy)))
+    (cond ((> x 630) (setf x 630)
+           (setf dx (- dx)))
+          ((> y 470) (setf y 470)
+           (setf dy (- dy)))
+          ((< x 0) (game-over x)
+           (setf dx (- dx)))
+          ((< y 0) (setf y 0)
+           (setf dy (- dy))))
+    (setf (ball-x ball) x)
+    (setf (ball-y ball) y)
+    (setf (ball-dx ball) dx)
+    (setf (ball-dy ball) dy)))
+
+(defun game-over (x)
+  (setf x 0))
 
 (defun game-idle (win)
+  (with-draw-to-win-surface (win surf)
+    (game-draw surf)))
+
+(defun game-draw (surf)
   (with-state-storage
       (game
        brick-sprite
        bricks
-       ball
+       balls
        board)
-    (let* ((surf (sdl2:get-window-surface win))
+    (let* ((ball (car balls))
            (ball-sprite (ball-sprite ball))
            (bw (sdl2-ffi.accessors:sdl-surface.w brick-sprite))
            (bh (sdl2-ffi.accessors:sdl-surface.h brick-sprite)))
+
       (sdl2:fill-rect surf 0 0 640 480
                       0 0 0 255)
+      (sdl2:fill-rect surf 0 0 640 480
+                      69 69 69 255)
       (loop
          for b in bricks
          do (sdl2:draw-sprite surf
@@ -91,7 +126,6 @@
                       10
                       (board-r board) (board-g board)
                       (board-b board) (board-a board)))))
-
 
 (defun game-input (win direction keysym)
   (if (eq direction :keydown)
@@ -115,3 +149,7 @@
             (sdl2:scancode-value keysym)
             :scancode-right)
            (setf (board-dx (gethash 'board game)) 10)))))
+
+(defun start-ball (ball)
+  (setf (ball-dx ball) (- 10 (random 20)))
+  (setf (ball-dy ball) -5))
