@@ -49,12 +49,13 @@
                      surface
                      (sdl2:make-rect x y w h)))
 
-(export 'fill-rect)
-(export 'get-window-surface)
-(export 'blit-surface)
-(export 'blit-surface-scaled)
-(export 'surface-rect)
-(export 'draw-sprite)
+(eval-when (:compile-toplevel)
+  (export 'fill-rect)
+  (export 'get-window-surface)
+  (export 'blit-surface)
+  (export 'blit-surface-scaled)
+  (export 'surface-rect)
+  (export 'draw-sprite))
 
 (in-package :aark)
 
