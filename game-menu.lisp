@@ -10,30 +10,30 @@
   (setf *update-fun* (lambda (&rest rest))))
 
 (defun game-menu-idle (win)
-  (let ((surf (sdl2:get-window-surface win))
-        (font (gethash 'font *storage*))
+  (let ((font (gethash 'font *storage*))
         (hash (gethash 'game-menu *storage*)))
-    (game-idle win)
-    (sdl2:fill-rect surf 0 0 640 480 0 0 0 72)
-    (sdl2:fill-rect surf 0 180 640 120 255 255 255 192)
+    (with-draw-to-win-surface (win surf)
+      (game-draw surf)
+      (sdl2:fill-rect surf 0 0 640 480 255 255 255 12)
+      (sdl2:fill-rect surf 0 180 640 120 255 255 255 32)
 
-    (let ((choise (gethash 'current-choise hash)))
+      (let ((choise (gethash 'current-choise hash)))
 
-      (if (= choise 0)
-          (sdl2:fill-rect surf 60 205 520 35
-                          180 95 215 255)
-          (sdl2:fill-rect surf 60 205 520 35
-                          110 44 138 255))
-      (write-on-surface "ПРОДОЛЖИТЬ" font surf
-                        :centered t :x 640 :y 200)
-      (if (= choise 1)
-          (sdl2:fill-rect surf 60 245 520 35
-                          180 95 215 255)
-          (sdl2:fill-rect surf 60 245 520 35
-                          110 44 138 255))
+        (if (= choise 0)
+            (sdl2:fill-rect surf 60 205 520 35
+                            180 95 215 255)
+            (sdl2:fill-rect surf 60 205 520 35
+                            110 44 138 255))
+        (write-on-surface "ПРОДОЛЖИТЬ" font surf
+                          :centered t :x 640 :y 200)
+        (if (= choise 1)
+            (sdl2:fill-rect surf 60 245 520 35
+                            180 95 215 255)
+            (sdl2:fill-rect surf 60 245 520 35
+                            110 44 138 255))
 
-      (write-on-surface "ВЫХОД" font surf
-                        :centered t :x 640 :y 240))))
+        (write-on-surface "ВЫХОД" font surf
+                          :centered t :x 640 :y 240)))))
 
 (defun game-menu-input (win direction keysym)
   (if (eq direction :keydown)
