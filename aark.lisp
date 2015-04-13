@@ -6,27 +6,38 @@
 (defvar *update-fun* (lambda (&rest rest)))
 (defvar *storage* (make-hash-table))
 
-(defun start ()
-  (sdl2:with-init (:video)
-    (sdl2:with-window (win :title "Aark"
-                           :w 640
-                           :h 480)
-      (init win)
-      (menu-init)
+(defparameter +delay+ (/ 1000.0 30.0))
 
-      (sdl2:with-event-loop (:method :poll)
-        (:keydown
-         (:keysym keysym)
-         (funcall *process-input-fun* win :keydown keysym))
-        (:keyup
-         (:keysym keysym)
-         (funcall *process-input-fun* win :keyup keysym))
-        (:idle
-         ()
-         (funcall *update-fun* win)
-         (funcall *idle-fun* win)
-         (sdl2:update-window win))
-        (:quit () t)))))
+(defun start ()
+  (let ((current-frame 0))
+    (sdl2:with-init (:video)
+      (sdl2:with-window (win :title "Aark"
+                             :w 640
+                             :h 480)
+        (init win)
+        (menu-init)
+
+        (sdl2:with-event-loop (:method :poll)
+          (:keydown
+           (:keysym keysym)
+           (funcall *process-input-fun* win :keydown keysym))
+          (:keyup
+           (:keysym keysym)
+           (funcall *process-input-fun* win :keyup keysym))
+          (:idle
+           ()
+           (setf current-frame (sdl2:get-ticks))
+           (funcall *update-fun* win)
+           (funcall *idle-fun* win)
+           (sdl2:update-window win)
+           (let ((current-speed (- (sdl2:get-ticks)
+                                   current-frame)))
+             (format t "delay: ~s current-speed: ~s~%"
+                     +delay+ current-speed)
+             (if (< current-speed +delay+)
+                 (progn
+                   (sdl2:delay (round (- +delay+ current-speed)))))))
+          (:quit () t))))))
 
 
 (defun init (win)
