@@ -8,12 +8,12 @@
   (let ((menu-hash (gethash 'menu *storage*)))
     (setf (gethash 'current-choise menu-hash) 0)))
 
-(defun menu-input (win direction keysym)
+(defun menu-input (win ren direction keysym)
   (if (eq direction :keydown)
-      (menu-keydown win keysym)
-      (menu-keyup win keysym)))
+      (menu-keydown win ren keysym)
+      (menu-keyup win ren keysym)))
 
-(defun menu-keyup (win keysym)
+(defun menu-keyup (win ren keysym)
   (cond ((sdl2:scancode=
           (sdl2:scancode-value keysym)
           :scancode-escape)
@@ -28,12 +28,12 @@
                  ((= choise 1)
                   nil)
                  ((= choise 0)
-                  (game-init)
+                  (game-init ren)
                   (setf *update-fun* 'game-update)
                   (setf *idle-fun* 'game-idle)
                   (setf *process-input-fun* 'game-input)))))))
 
-(defun menu-keydown (win keysym)
+(defun menu-keydown (win ren keysym)
   (let ((menu-hash (gethash 'menu *storage*)))
     (cond ((sdl2:scancode=
             (sdl2:scancode-value keysym)
@@ -48,36 +48,35 @@
                  (mod (1- (gethash 'current-choise menu-hash))
                       3))))))
 
-(defun menu-idle (win)
+(defun menu-idle (ren)
   (let* ((menu-hash (gethash 'menu *storage*))
          (font (gethash 'font *storage*))
          (choise (gethash 'current-choise menu-hash)))
-    (with-draw-to-win-surface (win surf)
-      (sdl2:fill-rect surf 0 0 640 480 83 3 116 255)
-      (if (= choise 0)
-          (sdl2:fill-rect surf 60 305 520 35
-                          180 95 215 255)
-          (sdl2:fill-rect surf 60 305 520 35
-                          110 44 138 255))
-      (write-on-surface "СТАРТ" font surf
-                        :centered t
-                        :x 640
-                        :y 300)
-      (if (= choise 1)
-          (sdl2:fill-rect surf 60 345 520 35
-                          180 95 215 255)
-          (sdl2:fill-rect surf 60 345 520 35
-                          110 44 138 255))
-      (write-on-surface "ВЫСОКИЕ ОЧКИ" font surf
-                        :centered t
-                        :x 640
-                        :y 340)
-      (if (= choise 2)
-          (sdl2:fill-rect surf 60 385 520 35
-                          180 95 215 255)
-          (sdl2:fill-rect surf 60 385 520 35
-                          110 44 138 255))
-      (write-on-surface "ВЫХОД" font surf
-                        :centered t
-                        :x 640
-                        :y 380))))
+    (draw-rect ren 0 0 640 480 83 3 116 255)
+    (if (= choise 0)
+	(draw-rect ren 60 305 520 35
+		   180 95 215 255)
+	(draw-rect ren 60 305 520 35
+		   110 44 138 255))
+    (write-on-surface ren "СТАРТ" font
+		      :centered t
+		      :x 640
+		      :y 300)
+    (if (= choise 1)
+	(draw-rect ren 60 345 520 35
+		   180 95 215 255)
+	(draw-rect ren 60 345 520 35
+		   110 44 138 255))
+    (write-on-surface ren "ВЫСОКИЕ ОЧКИ" font
+		      :centered t
+		      :x 640
+		      :y 340)
+    (if (= choise 2)
+	(draw-rect ren 60 385 520 35
+		   180 95 215 255)
+	(draw-rect ren 60 385 520 35
+		   110 44 138 255))
+    (write-on-surface ren "ВЫХОД" font
+		      :centered t
+		      :x 640
+		      :y 380)))

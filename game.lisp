@@ -6,7 +6,7 @@
 (defstruct board
   length x dx base-length r g b a)
 
-(defun game-init ()
+(defun game-init (ren)
   (unless (gethash 'game *storage* nil)
     (setf (gethash 'game *storage*) (make-hash-table)))
   (let ((game-hash (gethash 'game *storage*)))
@@ -17,7 +17,7 @@
        (running . t)
        (scores . 0)
        (bricks . ,(level-1))
-       (brick-sprite . ,(sdl2:load-bmp "/home/ex/pro/lisp/aark/kirpich.bmp"))
+       (brick-sprite . ,(load-texture ren "/home/ex/programming/lisp/aark/kirpich.bmp"))
        (board . ,(make-board
                   :base-length 20
                   :length 2
@@ -25,8 +25,7 @@
                   :r 60 :g 150 :b 90 :a 255))
        (balls . ,(list
                   (make-ball
-                   :sprite
-                   (sdl2:load-bmp "/home/ex/pro/lisp/aark/ball.bmp")
+                   :sprite (load-texture ren "/home/ex/programming/lisp/aark/ball.bmp")
                    :x 320 :y 240 :dx -1.0 :dy 1.0)))
        (bonuses . '()))))
   (with-state-storage (game
@@ -88,11 +87,10 @@
 (defun game-over (x)
   (setf x 0))
 
-(defun game-idle (win)
-  (with-draw-to-win-surface (win surf)
-    (game-draw surf)))
+(defun game-idle (ren)
+  (game-draw ren))
 
-(defun game-draw (surf)
+(defun game-draw (ren)
   (with-state-storage
       (game
        brick-sprite
@@ -101,33 +99,32 @@
        board)
     (let* ((ball (car balls))
            (ball-sprite (ball-sprite ball))
-           (bw (sdl2-ffi.accessors:sdl-surface.w brick-sprite))
-           (bh (sdl2-ffi.accessors:sdl-surface.h brick-sprite)))
-
-      (sdl2:fill-rect surf 0 0 640 480
-                      0 0 0 255)
-      (sdl2:fill-rect surf 0 0 640 480
-                      69 69 69 255)
+           (bw (sdl2:texture-width brick-sprite))
+           (bh (sdl2:texture-height brick-sprite)))
+      (draw-rect ren 0 0 640 480
+		 0 0 0 255)
+      (draw-rect ren 0 0 640 480
+		 69 69 69 255)
       (loop
          for b in bricks
-         do (sdl2:draw-sprite surf
-                              brick-sprite
-                              (+ 120 (* (car b) bw))
-                              (+ 40 (* (cdr b) bh))))
-      (sdl2:draw-sprite surf
-                        ball-sprite
-                        (ball-x ball)
-                        (ball-y ball))
-      (sdl2:fill-rect surf
-                      (board-x board)
-                      (- 480 20)
-                      (* (board-length board)
-                         (board-base-length board))
-                      10
-                      (board-r board) (board-g board)
-                      (board-b board) (board-a board)))))
+         do (draw-sprite ren
+			 brick-sprite
+			 (+ 120 (* (car b) bw))
+			 (+ 40 (* (cdr b) bh))))
+      (draw-sprite ren
+		   ball-sprite
+		   (ball-x ball)
+		   (ball-y ball))
+      (draw-rect ren
+		 (board-x board)
+		 (- 480 20)
+		 (* (board-length board)
+		    (board-base-length board))
+		 10
+		 (board-r board) (board-g board)
+		 (board-b board) (board-a board)))))
 
-(defun game-input (win direction keysym)
+(defun game-input (win ren direction keysym)
   (if (eq direction :keydown)
       (game-keydown win keysym)
       (game-keyup win keysym)))

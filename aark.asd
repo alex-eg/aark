@@ -1,8 +1,7 @@
 (in-package #:cl-user)
 
 (asdf:defsystem :aark
-  :depends-on (:sdl2-dev
-               :cffi)
+  :depends-on (:sdl2)
   :components ((:file "packages")
                (:file "util")
                (:file "font")
