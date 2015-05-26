@@ -11,33 +11,33 @@
                                :flags '(:sdl-renderer-accelerated
                                         :sdl-renderer-presentvsync))
         (let* ((renderer (make-instance 'renderer :renderer ren))
-               (state (make-instance    'menu :renderer renderer))))
-        (init renderer)
-        (sdl2:with-event-loop (:method :poll)
-          (:keydown
-           (:keysym keysym)
-           (funcall *process-input-fun* win ren :keydown keysym))
-          (:keyup
-           (:keysym keysym)
-           (funcall *process-input-fun* win ren :keyup keysym))
-          (:idle
-           ()
-           (setf current-frame (sdl2:get-ticks))
-           (funcall *update-fun* win)
-           (sdl2:render-clear ren)
-           (funcall *idle-fun* ren)
-           (sdl2:render-present ren)
-           (let ((current-speed (- (sdl2:get-ticks)
-                                   current-frame)))
-             (if (< current-speed +delay+)
-                 (progn
-                   (sdl2:delay (round (- +delay+ current-speed)))))))
-          (:quit () t))))))
-
-(defun init (ren)
-  (setf (gethash 'font *storage*)
-        (init-font ren
-		   "/home/ex/programming/lisp/aark/font3.bmp"
-                   "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
-                   40 40
-		   :r 0 :g 0 :b 0)))
+               (state (make-instance    'menu-state
+                                        :renderer renderer
+                                        :name "main menu")))
+          (add-font renderer :default
+                    "./font3.bmp"
+                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
+                    40 40
+                    :r 0 :g 0 :b 0)
+          (add-sprite renderer :ball  "./ball.bmp")
+          (add-sprite renderer :brick "./kirpich.bmp")
+          (sdl2:with-event-loop (:method :poll)
+            (:keydown
+             (:keysym keysym)
+             (process-input state :keydown keysym))
+            (:keyup
+             (:keysym keysym)
+             (process-input state :keyup keysym))
+            (:idle
+             ()
+             (setf current-frame (sdl2:get-ticks))
+             (update state)
+             (sdl2:render-clear ren)
+             (draw state)
+             (sdl2:render-present ren)
+             (let ((current-speed (- (sdl2:get-ticks)
+                                     current-frame)))
+               (if (< current-speed +delay+)
+                   (progn
+                     (sdl2:delay (round (- +delay+ current-speed)))))))
+            (:quit () t)))))))
