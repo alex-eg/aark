@@ -88,7 +88,8 @@
                               :rows rows
                               :cols cols
                               :cell-w cell-w
-                              :cell-h cell-h)))
+                              :cell-h cell-h)
+                   fonts))
       t)))
 
 (defun get-font (renderer font-name))
@@ -112,7 +113,8 @@
         (new-x (if centered
                    (/ (- x (* cell-w (length text)))
 		      2)
-                   x)))
+                   x))
+        (font (get-font renderer font-name)))
     (loop for char in text-list
        count char into i
        do (sdl2:render-copy
