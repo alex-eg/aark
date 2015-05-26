@@ -92,7 +92,8 @@
                    fonts))
       t)))
 
-(defun get-font (renderer font-name))
+(defun get-font (renderer font-name)
+  (cdr (assoc font-name (slot-value renderer 'fonts))))
 
 (defun get-font-symbol (num font)
   (multiple-value-bind (col row)
