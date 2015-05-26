@@ -17,7 +17,7 @@
        (running . t)
        (scores . 0)
        (bricks . ,(level-1))
-       (brick-sprite . ,(load-texture ren "/home/ex/programming/lisp/aark/kirpich.bmp"))
+       (brick-sprite . ,(load-texture ren #P"./kirpich.bmp"))
        (board . ,(make-board
                   :base-length 20
                   :length 2
@@ -25,7 +25,7 @@
                   :r 60 :g 150 :b 90 :a 255))
        (balls . ,(list
                   (make-ball
-                   :sprite (load-texture ren "/home/ex/programming/lisp/aark/ball.bmp")
+                   :sprite (load-texture ren #P"./ball.bmp")
                    :x 320 :y 240 :dx -1.0 :dy 1.0)))
        (bonuses . '()))))
   (with-state-storage (game

@@ -15,8 +15,8 @@
                              :w 640
                              :h 480)
 	(sdl2:with-renderer (ren win
-				 :flags '(:sdl-renderer-accelerated
-					  :sdl-renderer-presentvsync))
+				 :flags '(:accelerated
+					  :presentvsync))
 	  (init ren)
 	  (menu-init)
 	  (sdl2:with-event-loop (:method :poll)
@@ -43,9 +43,10 @@
 (defun init (ren)
   (setf (gethash 'font *storage*)
         (init-font ren
-		   "/home/ex/programming/lisp/aark/font3.bmp"
+		   #P"./font3.bmp"
                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
                    40 40
 		   :r 0 :g 0 :b 0))
   (setf *idle-fun* 'menu-idle)
   (setf *process-input-fun* 'menu-input))
+
