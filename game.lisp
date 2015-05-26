@@ -59,7 +59,9 @@
                    (board-r board) (board-g board)
                    (board-b board) (board-a board))))))
 
-(defmethod process-input ((game game-state) (direction keyword) (keysym keyword))
+(defmethod process-input ((game game-state)
+                          direction
+                          keysym)
   (if (eq direction :keydown)
       (game-keydown game keysym)
       (game-keyup game keysym)))
