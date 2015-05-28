@@ -15,39 +15,42 @@
                         :length 2
                         :x 40 :dx 0
                         :r 60 :g 150 :b 90 :a 255))
-   (brick-list :initform (level 1))
-   (ball-list  :initform (make-ball :x 320 :y 240 :dx -1.0 :dy 1.0))
-   (bonus-list :initform '())))
+   (brick-list :initform '())
+   (ball-list  :initform (list (make-ball :x 320 :y 240 :dx -1.0 :dy 1.0)))
+   (bonus-list :initform '())
+   (running    :initform nil)))
 
 (defmethod init ((state state))
+  (setf (slot-value state 'brick-list) (level-1))
+  (setf (slot-value state 'running) t)
   (start-ball (car (slot-value state 'ball-list))))
 
 (defmethod update ((game game-state))
   (with-slots (running board ball-list) game
     (when running
       (update-board board)
-      (mapcar #'update-ball balls))))
+      (mapcar #'update-ball ball-list))))
 
 (defmethod draw ((game game-state))
   (with-slots (renderer brick-list ball-list board) game
     (with-slots (sprites) renderer
       (let* ((ball (car ball-list))
-             (ball-sprite (get-sprite renderer :ball))
-             (brick-sprite (get-sprite renderer :brick))
-             (bw (sdl2:texture-width brick-sprite))
-             (bh (sdl2:texture-height brick-sprite)))
+             (ball-texture (get-sprite-texture renderer :ball))
+             (brick-texture (get-sprite-texture renderer :brick))
+             (bw (sdl2:texture-width brick-texture))
+             (bh (sdl2:texture-height brick-texture)))
         (draw-rect renderer 0 0 640 480
                    0 0 0 255)
         (draw-rect renderer 0 0 640 480
                    69 69 69 255)
         (loop
-           for b in bricks
+           for b in brick-list
            do (draw-sprite renderer
-                           brick-sprite
+                           :brick
                            (+ 120 (* (car b) bw))
                            (+ 40 (* (cdr b) bh))))
         (draw-sprite renderer
-                     ball-sprite
+                     :ball
                      (ball-x ball)
                      (ball-y ball))
         (draw-rect renderer
@@ -69,19 +72,21 @@
 (defun game-keyup (game keysym))
 
 (defun game-keydown (game keysym)
-  (cond ((sdl2:scancode=
-          (sdl2:scancode-value keysym)
-          :scancode-escape)
-         (setf (gethash 'running game) nil)
-         (show-game-menu))
-        ((sdl2:scancode=
-          (sdl2:scancode-value keysym)
-          :scancode-left)
-         (setf (board-dx (gethash 'board game)) -10))
-        ((sdl2:scancode=
-          (sdl2:scancode-value keysym)
-          :scancode-right)
-         (setf (board-dx (gethash 'board game)) 10))))
+  (with-slots (board running) game
+    (cond ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-escape)
+           (setf running nil)
+                                        ;         (show-game-menu)
+           )
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-left)
+           (setf (board-dx board) -10))
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-right)
+           (setf (board-dx board) 10)))))
 
 (defun level-1 ()
   (loop

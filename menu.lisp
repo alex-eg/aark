@@ -26,8 +26,8 @@
                   nil)
                  ((= choise 0)
                   nil
-;                  (game-init ren)
-))))))
+                  (with-slots ((app application)) menu
+                    (set-state app :game))))))))
 
 (defun menu-keydown (menu keysym)
   (cond ((sdl2:scancode=
