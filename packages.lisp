@@ -4,4 +4,4 @@
   (:documentation "Arkanoid game main package")
   (:use :cl)
   (:export
-   #:start))
+   #:main))
