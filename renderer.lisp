@@ -49,10 +49,11 @@
                            (sdl2:make-rect x y w h))))
 
 (defun draw-sprite (renderer sprite-name x y)
-  (let ((w (sdl2:texture-width texture))
-	(h (sdl2:texture-height texture)))
+  (let* ((texture (get-sprite-texture renderer sprite-name))
+         (w (sdl2:texture-width texture))
+         (h (sdl2:texture-height texture)))
     (sdl2:render-copy (slot-value renderer 'sdl2-renderer)
-                      (get-sprite-texture renderer sprite-name)
+                      texture
 		      :dest-rect (sdl2:make-rect x y w h))))
 
 (defstruct font
