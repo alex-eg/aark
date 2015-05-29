@@ -13,3 +13,6 @@
 (defgeneric update (state))
 (defgeneric draw (state))
 (defgeneric cleanup (state))
+
+(defmethod init ((state state)))
+(defmethod update ((state state)))
