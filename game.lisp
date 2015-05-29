@@ -72,13 +72,13 @@
 (defun game-keyup (game keysym))
 
 (defun game-keydown (game keysym)
-  (with-slots (board running) game
+  (with-slots (board running (app application))
+      game
     (cond ((sdl2:scancode=
             (sdl2:scancode-value keysym)
             :scancode-escape)
            (setf running nil)
-                                        ;         (show-game-menu)
-           )
+           (set-state app :game-menu))
           ((sdl2:scancode=
             (sdl2:scancode-value keysym)
             :scancode-left)
@@ -130,6 +130,9 @@
 
 (defun game-over (x)
   (setf x 0))
+
+(defun game-unpause (game)
+  (setf (slot-value game 'running) t))
 
 (defun start-ball (ball)
   (setf (ball-dx ball) (- 10 (random 20)))

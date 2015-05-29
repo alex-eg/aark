@@ -45,6 +45,7 @@
           (setf (slot-value app 'renderer) renderer)
           (add-state app 'menu-state :main-menu)
           (add-state app 'game-state :game)
+          (add-state app 'game-menu-state :game-menu)
           (add-font renderer :default
                     "./font3.bmp"
                     "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
