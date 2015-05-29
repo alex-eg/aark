@@ -1,36 +1,93 @@
 (in-package :aark)
 
 (defstruct ball
-  x y dx dy sprite)
+  x y dx dy)
 
 (defstruct board
   length x dx base-length r g b a)
 
-(defun game-init (ren)
-  (unless (gethash 'game *storage* nil)
-    (setf (gethash 'game *storage*) (make-hash-table)))
-  (let ((game-hash (gethash 'game *storage*)))
-    (mapcar
-     (lambda (pair)
-       (setf (gethash (car pair) game-hash) (cdr pair)))
-     `((lifes  . 3)
-       (running . t)
-       (scores . 0)
-       (bricks . ,(level-1))
-       (brick-sprite . ,(load-texture ren #P"./kirpich.bmp"))
-       (board . ,(make-board
-                  :base-length 20
-                  :length 2
-                  :x 40 :dx 0
-                  :r 60 :g 150 :b 90 :a 255))
-       (balls . ,(list
-                  (make-ball
-                   :sprite (load-texture ren #P"./ball.bmp")
-                   :x 320 :y 240 :dx -1.0 :dy 1.0)))
-       (bonuses . '()))))
-  (with-state-storage (game
-                       balls)
-    (start-ball (car balls))))
+(defclass game-state (state)
+  ((lifes    :initform 3)
+   (runningp :initform t)
+   (score    :initform 0)
+   (board    :initform (make-board
+                        :base-length 20
+                        :length 2
+                        :x 40 :dx 0
+                        :r 60 :g 150 :b 90 :a 255))
+   (brick-list :initform '())
+   (ball-list  :initform (list (make-ball :x 320 :y 240 :dx -1.0 :dy 1.0)))
+   (bonus-list :initform '())
+   (running    :initform nil)))
+
+(defmethod init ((game game-state))
+  (with-slots (brick-list running ball-list) game
+    (setf brick-list (level-1))
+    (setf running t)
+    (start-ball (car ball-list))))
+
+(defmethod update ((game game-state))
+  (with-slots (running board ball-list) game
+    (when running
+      (update-board board)
+      (mapcar #'update-ball ball-list))))
+
+(defmethod draw ((game game-state))
+  (with-slots (renderer brick-list ball-list board) game
+    (with-slots (sprites) renderer
+      (let* ((ball (car ball-list))
+             (ball-texture (get-sprite-texture renderer :ball))
+             (brick-texture (get-sprite-texture renderer :brick))
+             (bw (sdl2:texture-width brick-texture))
+             (bh (sdl2:texture-height brick-texture)))
+        (draw-rect renderer 0 0 640 480
+                   0 0 0 255)
+        (draw-rect renderer 0 0 640 480
+                   69 69 69 255)
+        (loop
+           for b in brick-list
+           do (draw-sprite renderer
+                           :brick
+                           (+ 120 (* (car b) bw))
+                           (+ 40 (* (cdr b) bh))))
+        (draw-sprite renderer
+                     :ball
+                     (ball-x ball)
+                     (ball-y ball))
+        (draw-rect renderer
+                   (board-x board)
+                   (- 480 20)
+                   (* (board-length board)
+                      (board-base-length board))
+                   10
+                   (board-r board) (board-g board)
+                   (board-b board) (board-a board))))))
+
+(defmethod process-input ((game game-state)
+                          direction
+                          keysym)
+  (if (eq direction :keydown)
+      (game-keydown game keysym)
+      (game-keyup game keysym)))
+
+(defun game-keyup (game keysym))
+
+(defun game-keydown (game keysym)
+  (with-slots (board running (app application))
+      game
+    (cond ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-escape)
+           (setf running nil)
+           (set-state app :game-menu))
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-left)
+           (setf (board-dx board) -10))
+          ((sdl2:scancode=
+            (sdl2:scancode-value keysym)
+            :scancode-right)
+           (setf (board-dx board) 10)))))
 
 (defun level-1 ()
   (loop
@@ -39,18 +96,6 @@
        (loop
           for j from 0 to 9
           collect (cons i j))))
-
-(defun game-update (win)
-  (with-state-storage
-      (game
-       brick-sprite
-       bricks
-       balls
-       board
-       running)
-    (when running
-      (update-board board)
-      (mapcar #'update-ball balls))))
 
 (defun update-board (board)
   (setf (board-x board)
@@ -87,65 +132,8 @@
 (defun game-over (x)
   (setf x 0))
 
-(defun game-idle (ren)
-  (game-draw ren))
-
-(defun game-draw (ren)
-  (with-state-storage
-      (game
-       brick-sprite
-       bricks
-       balls
-       board)
-    (let* ((ball (car balls))
-           (ball-sprite (ball-sprite ball))
-           (bw (sdl2:texture-width brick-sprite))
-           (bh (sdl2:texture-height brick-sprite)))
-      (draw-rect ren 0 0 640 480
-		 0 0 0 255)
-      (draw-rect ren 0 0 640 480
-		 69 69 69 255)
-      (loop
-         for b in bricks
-         do (draw-sprite ren
-			 brick-sprite
-			 (+ 120 (* (car b) bw))
-			 (+ 40 (* (cdr b) bh))))
-      (draw-sprite ren
-		   ball-sprite
-		   (ball-x ball)
-		   (ball-y ball))
-      (draw-rect ren
-		 (board-x board)
-		 (- 480 20)
-		 (* (board-length board)
-		    (board-base-length board))
-		 10
-		 (board-r board) (board-g board)
-		 (board-b board) (board-a board)))))
-
-(defun game-input (win ren direction keysym)
-  (if (eq direction :keydown)
-      (game-keydown win keysym)
-      (game-keyup win keysym)))
-
-(defun game-keyup (win keysym))
-
-(defun game-keydown (win keysym)
-  (let ((game (gethash 'game *storage*)))
-    (cond ((sdl2:scancode=
-            (sdl2:scancode-value keysym)
-            :scancode-escape)
-           (setf (gethash 'running game) nil)
-           (show-game-menu))
-          ((sdl2:scancode=
-            (sdl2:scancode-value keysym)
-            :scancode-left)
-           (setf (board-dx (gethash 'board game)) -10))
-          ((sdl2:scancode=
-            (sdl2:scancode-value keysym)
-            :scancode-right)
-           (setf (board-dx (gethash 'board game)) 10)))))
+(defun game-unpause (game)
+  (setf (slot-value game 'running) t))
 
 (defun start-ball (ball)
   (setf (ball-dx ball) (- 10 (random 20)))

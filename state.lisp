@@ -1,54 +1,18 @@
-(in-package #:aark.state)
+(in-package :aark)
 
-;; variables storing current states functions
-(defvar *init* nil)
-(defvar *process-input* nil)
-(defvar *update* nil)
-(defvar *render* nil)
-(defvar *cleanup* nil)
+(defclass state ()
+  ((name     :initform (error "Name must be set")
+             :initarg :name)
+   (application :initform (error "Application must be set")
+                :initarg :application)
+   (renderer    :initform (error "Renderer must be set")
+                :initarg :renderer)))
 
-;; variable storing all needed information, e.g. in a hash table
-(defvar *state*)
+(defgeneric init (state))
+(defgeneric process-input (state direction keysym))
+(defgeneric update (state))
+(defgeneric draw (state))
+(defgeneric cleanup (state))
 
-;; maybe there should be a grand defmacro?..
-(defun set-state (init input update render cleanup)
-  (setf *init* init)
-  (setf *process-input* input)
-  (setf *update* update)
-  (setf *render* render)
-  (setf *cleanup* cleanup))
-
-(defun init (&rest args)
-  (apply *init* args))
-
-(defun process-input (&rest args)
-  (apply *process-input* args))
-
-(defun update (&rest args)
-  (apply *process-input* args))
-
-(defun render (&rest args)
-  (apply *render* args))
-
-(defun cleanup (&rest args)
-  (apply *cleanup* args))
-
-
-;;; TEMP
-
-(defun initialize-game-state ()
-  (labels
-      ((init ())
-       (input ()
-         (sdl2:with-event-loop (:method :poll)
-           (:keyup
-            (:keysym keysym)
-            (when (sdl2:scancode=
-                   (sdl2:scancode-value keysym)
-                   :scancode-escape)
-              (sdl2:push-event :quit)))))
-       (update ())
-       (render (mainwin)
-         ())
-       (cleanup ()))))
-
+(defmethod init ((state state)))
+(defmethod update ((state state)))

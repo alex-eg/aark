@@ -3,8 +3,9 @@
 (asdf:defsystem :aark
   :depends-on (:sdl2)
   :components ((:file "packages")
-               (:file "util")
-               (:file "font")
+               (:file "application")
+               (:file "renderer")
+               (:file "state")
                (:file "game")
                (:file "game-menu")
                (:file "menu")
