@@ -32,6 +32,12 @@
       (setf current-state state)
       (unless no-reinit (init state)))))
 
+(defun get-state (app state-name)
+  (with-slots ((states state-hash))
+      app
+    (or (gethash state-name states nil)
+        (error "No name state with name ~S" state-name))))
+
 (defmethod start ((app application))
     (sdl2:with-init (:video)
     (sdl2:with-window (win :title "Aark"
