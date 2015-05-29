@@ -22,7 +22,7 @@
         (setf current-state state))
       (setf (gethash state-name states) state))))
 
-(defun set-state (app state-name)
+(defun set-state (app state-name &key (no-reinit nil))
   (with-slots ((states state-hash)
                current-state)
       app
@@ -30,7 +30,7 @@
       (unless state
         (error "State with name ~a does not exist" state-name))
       (setf current-state state)
-      (init state))))
+      (unless no-reinit (init state)))))
 
 (defmethod start ((app application))
     (sdl2:with-init (:video)
