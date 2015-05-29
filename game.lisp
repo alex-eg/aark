@@ -20,10 +20,11 @@
    (bonus-list :initform '())
    (running    :initform nil)))
 
-(defmethod init ((state state))
-  (setf (slot-value state 'brick-list) (level-1))
-  (setf (slot-value state 'running) t)
-  (start-ball (car (slot-value state 'ball-list))))
+(defmethod init ((game game-state))
+  (with-slots (brick-list running ball-list) game
+    (setf brick-list (level-1))
+    (setf running t)
+    (start-ball (car ball-list))))
 
 (defmethod update ((game game-state))
   (with-slots (running board ball-list) game
