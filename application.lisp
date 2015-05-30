@@ -39,7 +39,8 @@
         (error "No name state with name ~S" state-name))))
 
 (defmethod start ((app application))
-    (sdl2:with-init (:video)
+  (sdl2-image:init '(:png))
+  (sdl2:with-init (:video)
     (sdl2:with-window (win :title "Aark"
                            :w 640
                            :h 480)
@@ -79,4 +80,6 @@
                  (if (< current-speed +delay+)
                      (progn
                        (sdl2:delay (round (- +delay+ current-speed)))))))
-              (:quit () t))))))))
+              (:quit ()
+                     (sdl2-image:quit)
+                     t))))))))
