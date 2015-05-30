@@ -7,8 +7,9 @@
    (fonts         :initform '())))
 
 (defun load-texture (renderer path-to-file)
-  (sdl2:create-texture-from-surface renderer
-                                    (sdl2:load-bmp path-to-file)))
+  (sdl2:create-texture-from-surface
+   renderer
+   (sdl2-image:load-image path-to-file)))
 
 (defun add-sprite (renderer sprite-name path-to-file)
   (etypecase sprite-name
