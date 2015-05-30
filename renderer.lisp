@@ -8,11 +8,11 @@
 
 (defun load-texture (renderer path-to-file)
   (sdl2:create-texture-from-surface renderer
-				    (sdl2:load-bmp path-to-file)))
+                                    (sdl2:load-bmp path-to-file)))
 
 (defun add-sprite (renderer sprite-name path-to-file)
   (etypecase sprite-name
-    (keyword 
+    (keyword
      (with-slots (sdl2-renderer sprites) renderer
        (if (assoc sprite-name sprites)
            (error "Sprite with name ~a already registered" sprite-name))
@@ -43,7 +43,7 @@
   (sdl2:texture-height (get-sprite-texture renderer sprite-name)))
 
 (defun draw-rect (renderer x y w h r g b a)
-  (with-slots (sdl2-renderer) renderer 
+  (with-slots (sdl2-renderer) renderer
     (sdl2:set-render-draw-color sdl2-renderer r g b a)
     (sdl2:render-fill-rect sdl2-renderer
                            (sdl2:make-rect x y w h))))
@@ -54,7 +54,7 @@
          (h (sdl2:texture-height texture)))
     (sdl2:render-copy (slot-value renderer 'sdl2-renderer)
                       texture
-		      :dest-rect (sdl2:make-rect x y w h))))
+                      :dest-rect (sdl2:make-rect x y w h))))
 
 (defstruct font
   sprite
@@ -73,10 +73,10 @@
 (defun add-font (renderer font-name path-to-file alphabet cell-w cell-h
                  &key (r 0) (g 0) (b 0))
   (let* ((font-sprite (add-sprite renderer font-name path-to-file))
-	 (width (sprite-width renderer font-sprite))
-	 (height (sprite-heigth renderer font-sprite))
-	 (rows (floor height cell-h))
-	 (cols (floor width cell-w)))
+         (width (sprite-width renderer font-sprite))
+         (height (sprite-heigth renderer font-sprite))
+         (rows (floor height cell-h))
+         (cols (floor width cell-w)))
     (with-slots (fonts) renderer
       (setf fonts (acons
                    font-name
@@ -114,19 +114,19 @@
                       collect c))
         (new-x (if centered
                    (/ (- x (* cell-w (length text)))
-		      2)
+                      2)
                    x))
         (font (get-font renderer font-name)))
     (loop for char in text-list
        count char into i
        do (sdl2:render-copy
-	   (slot-value renderer 'sdl2-renderer)
-	   (get-sprite-texture renderer (font-sprite font))
-	   :source-rect
-	   (get-font-symbol (gethash char
-				     (font-alphabet font))
-			    font)
-	   :dest-rect
-	   (sdl2:make-rect 
-	    (+ new-x (* cell-w (1- i))) y
-	    cell-w cell-h)))))
+           (slot-value renderer 'sdl2-renderer)
+           (get-sprite-texture renderer (font-sprite font))
+           :source-rect
+           (get-font-symbol (gethash char
+                                     (font-alphabet font))
+                            font)
+           :dest-rect
+           (sdl2:make-rect
+            (+ new-x (* cell-w (1- i))) y
+            cell-w cell-h)))))
