@@ -54,11 +54,11 @@
           (add-state app 'game-state :game)
           (add-state app 'game-menu-state :game-menu)
           (add-font renderer :default
-                    "./font3.bmp"
+                    "./font3.png"
                     "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
                     40 40
                     :r 0 :g 0 :b 0)
-          (add-sprite renderer :ball  "./ball.bmp")
+          (add-sprite renderer :ball "./ball.png")
           (add-sprite renderer :brick "./kirpich.bmp")
           (with-slots ((state current-state)) app
             (sdl2:with-event-loop (:method :poll)
