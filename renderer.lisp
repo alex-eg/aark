@@ -11,17 +11,19 @@
    renderer
    (sdl2-image:load-image path-to-file)))
 
-(defun add-sprite (renderer sprite-name path-to-file)
+(defun add-sprite (renderer sprite-name path-to-file &key (blend-mode :none))
   (etypecase sprite-name
     (keyword
      (with-slots (sdl2-renderer sprites) renderer
        (if (assoc sprite-name sprites)
            (error "Sprite with name ~a already registered" sprite-name))
-       (setf sprites
-             (acons sprite-name
-                    (load-texture sdl2-renderer path-to-file)
-                    sprites))
-       sprite-name))))
+       (let ((texture (load-texture sdl2-renderer path-to-file)))
+         (sdl2:set-texture-blend-mode renderer texture blend-mode)
+         (setf sprites
+               (acons sprite-name
+                      texture
+                      sprites))
+         sprite-name)))))
 
 (defun get-sprite-texture (renderer sprite-name)
   (etypecase sprite-name
@@ -43,17 +45,20 @@
 (defun sprite-heigth (renderer sprite-name)
   (sdl2:texture-height (get-sprite-texture renderer sprite-name)))
 
-(defun draw-rect (renderer x y w h r g b a)
+(defun draw-rect (renderer x y w h r g b a &key (blendmode :blend))
   (with-slots (sdl2-renderer) renderer
+    (sdl2:set-render-draw-blend-mode sdl2-renderer blendmode)
     (sdl2:set-render-draw-color sdl2-renderer r g b a)
     (sdl2:render-fill-rect sdl2-renderer
                            (sdl2:make-rect x y w h))))
 
-(defun draw-sprite (renderer sprite-name x y)
+(defun draw-sprite (renderer sprite-name x y &key (blendmode :blend))
   (let* ((texture (get-sprite-texture renderer sprite-name))
+         (sdl2-renderer (slot-value renderer 'sdl2-renderer))
          (w (sdl2:texture-width texture))
          (h (sdl2:texture-height texture)))
-    (sdl2:render-copy (slot-value renderer 'sdl2-renderer)
+    (sdl2:set-texture-blend-mode sdl2-renderer texture blendmode)
+    (sdl2:render-copy sdl2-renderer
                       texture
                       :dest-rect (sdl2:make-rect x y w h))))
 
@@ -72,8 +77,8 @@
                      (sdl2-ffi.functions:sdl-get-error)))))
 
 (defun add-font (renderer font-name path-to-file alphabet cell-w cell-h
-                 &key (r 0) (g 0) (b 0))
-  (let* ((font-sprite (add-sprite renderer font-name path-to-file))
+                 &key (r 0) (g 0) (b 0) (blend-mode :blend))
+  (let* ((font-sprite (add-sprite renderer font-name path-to-file :blend-mode blend-mode))
          (width (sprite-width renderer font-sprite))
          (height (sprite-heigth renderer font-sprite))
          (rows (floor height cell-h))
