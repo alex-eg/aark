@@ -45,8 +45,8 @@
                            :w 640
                            :h 480)
       (sdl2:with-renderer (ren win
-                               :flags '(:sdl-renderer-accelerated
-                                        :sdl-renderer-presentvsync))
+                               :flags '(:accelerated
+                                        :presentvsync))
         (let* ((renderer (make-instance 'renderer :renderer ren))
                current-frame)
           (setf (slot-value app 'renderer) renderer)
