@@ -52,11 +52,12 @@
     (sdl2:render-fill-rect sdl2-renderer
                            (sdl2:make-rect x y w h))))
 
-(defun draw-sprite (renderer sprite-name x y &key (blendmode :blend))
+(defun draw-sprite (renderer sprite-name x y &key (blendmode :blend)
+                                               (scale 1.0))
   (let* ((texture (get-sprite-texture renderer sprite-name))
          (sdl2-renderer (slot-value renderer 'sdl2-renderer))
-         (w (sdl2:texture-width texture))
-         (h (sdl2:texture-height texture)))
+         (w (round (* scale (sdl2:texture-width texture))))
+         (h (round (* scale (sdl2:texture-height texture)))))
     (sdl2:set-texture-blend-mode sdl2-renderer texture blendmode)
     (sdl2:render-copy sdl2-renderer
                       texture
