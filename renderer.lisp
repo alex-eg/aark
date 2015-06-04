@@ -42,7 +42,7 @@
 (defun sprite-width (renderer sprite-name)
   (sdl2:texture-width (get-sprite-texture renderer sprite-name)))
 
-(defun sprite-heigth (renderer sprite-name)
+(defun sprite-height (renderer sprite-name)
   (sdl2:texture-height (get-sprite-texture renderer sprite-name)))
 
 (defun draw-rect (renderer x y w h r g b a &key (blendmode :blend))
@@ -81,7 +81,7 @@
                  &key (r 0) (g 0) (b 0) (blend-mode :blend))
   (let* ((font-sprite (add-sprite renderer font-name path-to-file :blend-mode blend-mode))
          (width (sprite-width renderer font-sprite))
-         (height (sprite-heigth renderer font-sprite))
+         (height (sprite-height renderer font-sprite))
          (rows (floor height cell-h))
          (cols (floor width cell-w)))
     (with-slots (fonts) renderer
