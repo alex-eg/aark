@@ -101,10 +101,10 @@
 
 (defun level-1 ()
   (loop
-     for i from 0 to 9
+     for i from 0 to 15
      append
        (loop
-          for j from 0 to 9
+          for j from 0 to 7
           collect (cons i j))))
 
 (defun update-board (board)
