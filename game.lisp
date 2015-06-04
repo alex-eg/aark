@@ -27,10 +27,20 @@
     (start-ball (car ball-list))))
 
 (defmethod update ((game game-state))
-  (with-slots (running board ball-list) game
+  (with-slots (renderer running board ball-list brick-list) game
     (when running
       (update-board board)
-      (mapcar #'update-ball ball-list))))
+      (mapcar #'update-ball ball-list)
+      (mapcar (lambda (ball)
+                (mapcar
+                 (lambda (brick)
+                   (let ((collision-list
+                          (detect-collision ball brick
+                                            renderer)))
+                     (if collision-list (process-collision renderer
+                                                           collision-list))))
+                 brick-list))
+              ball-list))))
 
 (defmethod draw ((game game-state))
   (with-slots (renderer brick-list ball-list board) game
@@ -139,3 +149,73 @@
 (defun start-ball (ball)
   (setf (ball-dx ball) (- 10 (random 20)))
   (setf (ball-dy ball) -5))
+
+(defun detect-collision (ball brick renderer)
+  (let ((brick.w (sprite-width renderer :brick))
+        (brick.h (sprite-height renderer :brick)))  
+    (let* ((brick.lt (cons (* brick.w (car brick))
+                           (+ 40 (* brick.h (cdr brick)))))
+           (brick.lb (cons (car brick.lt)
+                           (+ brick.h (cdr brick.lt))))
+           (brick.rt (cons (+ brick.w (car brick.lt))
+                           (cdr brick.lt)))
+           (brick.rb (cons (car brick.rt)
+                           (+ brick.h (cdr brick.rt))))
+           ;; Sides
+           (left   (cons brick.lt brick.lb))
+           (right  (cons brick.rt brick.rb))
+           (top    (cons brick.lt brick.rt))
+           (bottom (cons brick.lb brick.rb))
+
+           (ball-path (cons
+                       (cons (ball-x ball) (ball-y ball))
+                       (cons (- (ball-x ball)
+                                (ball-dx ball))
+                             (- (ball-y ball)
+                                (ball-dy ball))))))
+      (remove-if-not (lambda (side) (intersectp ball-path side))
+                     (list left right top bottom)))))
+
+(defun intersectp (line1 line2)
+  (flet ((x (c) (car c))
+         (y (c) (cdr c))
+         (n/e (a b) (not (eql a b))))
+    (flet ((orientation (p q r)
+             (let ((val (- (* (- (y q) (y p))
+                              (- (x r) (x q)))
+                           (* (- (x q) (x p))
+                              (- (y r) (y q))))))
+               (cond ((= val 0) :collinear)
+                     ((> val 0) :cw)
+                     ((< val 0) :ccw))))
+           (on-segment (p q r)
+             (and (<= (x q) (max (x p) (x r)))
+                  (>= (x q) (min (x p) (x r)))
+                  (<= (y q) (max (y p) (y r)))
+                  (>= (y q) (min (y p) (y r))))))
+      (let ((p1 (car line1))
+            (q1 (cdr line1))
+            (p2 (car line2))
+            (q2 (cdr line2)))
+        (let ((o1 (orientation p1 q1 p2))
+              (o2 (orientation p1 q1 q2))
+              (o3 (orientation p2 q2 p1))
+              (o4 (orientation p2 q2 q1)))
+          (or (and (n/e o1 o2) (n/e o3 o4))
+              (and (eql o1 :collinear) (on-segment p1 p2 q1))
+              (and (eql o2 :collinear) (on-segment p1 q2 q1))
+              (and (eql o3 :collinear) (on-segment p2 p1 q2))
+              (and (eql o4 :collinear) (on-segment p2 q1 q2))))))))
+
+(defun process-collision (renderer collision-list)
+  (mapc
+   (lambda (side)
+     (let* ((x (caar side))
+            (y (cdar side))
+            (w (- (cadr side) x))
+            (h (- (cddr side) y)))
+       (draw-rect renderer x y
+                  (or (and (= w 0) 4) w)
+                  (or (and (= h 0) 6) h)
+                  255 0 0 255)))
+   collision-list))
