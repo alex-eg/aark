@@ -48,8 +48,8 @@
       (let* ((ball (car ball-list))
              (ball-texture (get-sprite-texture renderer :ball))
              (brick-texture (get-sprite-texture renderer :brick))
-             (bw (* 2 (sdl2:texture-width brick-texture)))
-             (bh (* 2 (sdl2:texture-height brick-texture))))
+             (bw (sdl2:texture-width brick-texture))
+             (bh (sdl2:texture-height brick-texture)))
         (draw-rect renderer 0 0 640 480
                    0 0 0 255)
         (draw-rect renderer 0 0 640 480
@@ -59,8 +59,7 @@
            do (draw-sprite renderer
                            :brick
                            (* (car b) bw)
-                           (+ 40 (* (cdr b) bh))
-                           :scale 2))
+                           (+ 40 (* (cdr b) bh))))
         (draw-sprite renderer
                      :ball
                      (ball-x ball)
