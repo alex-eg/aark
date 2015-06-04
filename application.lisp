@@ -71,9 +71,9 @@
               (:idle
                ()
                (setf current-frame (sdl2:get-ticks))
-               (update state)
                (sdl2:render-clear ren)
                (draw state)
+               (update state)
                (sdl2:render-present ren)
                (let ((current-speed (- (sdl2:get-ticks)
                                        current-frame)))
