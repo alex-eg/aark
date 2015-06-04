@@ -152,7 +152,7 @@
 
 (defun detect-collision (ball brick renderer)
   (let ((brick.w (sprite-width renderer :brick))
-        (brick.h (sprite-height renderer :brick)))  
+        (brick.h (sprite-height renderer :brick)))
     (let* ((brick.lt (cons (* brick.w (car brick))
                            (+ 40 (* brick.h (cdr brick)))))
            (brick.lb (cons (car brick.lt)
