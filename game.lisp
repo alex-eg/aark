@@ -38,7 +38,9 @@
                           (detect-collision ball brick
                                             renderer)))
                      (if collision-list (process-collision renderer
-                                                           collision-list))))
+                                                           ball
+                                                           brick-list
+                                                           (car collision-list)))))
                  brick-list))
               ball-list))))
 
@@ -173,7 +175,10 @@
                              (- (ball-y ball)
                                 (ball-dy ball))))))
       (remove-if-not (lambda (side) (intersectp ball-path side))
-                     (list left right top bottom)))))
+                     (mapcar (lambda (int side) (list int brick side))
+                             (list left right top bottom)
+                             (list :left :right :top :bottom))
+                     :key #'car))))
 
 (defun intersectp (line1 line2)
   (flet ((x (c) (car c))
@@ -206,15 +211,22 @@
               (and (eql o3 :collinear) (on-segment p2 p1 q2))
               (and (eql o4 :collinear) (on-segment p2 q1 q2))))))))
 
-(defun process-collision (renderer collision-list)
-  (mapc
-   (lambda (side)
-     (let* ((x (caar side))
-            (y (cdar side))
-            (w (- (cadr side) x))
-            (h (- (cddr side) y)))
-       (draw-rect renderer x y
-                  (or (and (= w 0) 4) w)
-                  (or (and (= h 0) 6) h)
-                  255 0 0 255)))
-   collision-list))
+(defun process-collision (renderer ball brick-list collision)
+  (destructuring-bind (int brick side) collision
+    (let* ((x (caar int))
+           (y (cdar int))
+           (w (- (cadr int) x))
+           (h (- (cddr int) y)))
+      (draw-rect renderer x y
+                 (or (and (= w 0) 4) w)
+                 (or (and (= h 0) 6) h)
+                 255 0 0 255)
+      (delete brick brick-list)
+      (cond ((or (eql side :left)
+                 (eql side :right))
+             (setf (ball-dx ball)
+                   (- (ball-dx ball))))
+            ((or (eql side :top)
+                 (eql side :bottom))
+             (setf (ball-dy ball)
+                   (- (ball-dy ball))))))))
