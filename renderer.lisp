@@ -78,7 +78,7 @@
                      (sdl2-ffi.functions:sdl-get-error)))))
 
 (defun add-font (renderer font-name path-to-file alphabet cell-w cell-h
-                 &key (r 0) (g 0) (b 0) (blend-mode :blend))
+                 &key (blend-mode :blend))
   (let* ((font-sprite (add-sprite renderer font-name path-to-file :blend-mode blend-mode))
          (width (sprite-width renderer font-sprite))
          (height (sprite-height renderer font-sprite))
