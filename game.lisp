@@ -45,13 +45,14 @@
               ball-list))))
 
 (defmethod draw ((game game-state))
-  (with-slots (renderer brick-list ball-list board) game
+  (with-slots (renderer brick-list ball-list board lifes score) game
     (with-slots (sprites) renderer
       (let* ((ball (car ball-list))
              (ball-texture (get-sprite-texture renderer :ball))
              (brick-texture (get-sprite-texture renderer :brick))
              (bw (sdl2:texture-width brick-texture))
-             (bh (sdl2:texture-height brick-texture)))
+             (bh (sdl2:texture-height brick-texture))
+             (ball-side (sdl2:texture-height ball-texture)))
         (draw-rect renderer 0 0 640 480
                    0 0 0 255)
         (draw-rect renderer 0 0 640 480
@@ -66,6 +67,11 @@
                      :ball
                      (ball-x ball)
                      (ball-y ball))
+        (loop for l from 0 to (1- lifes) do
+             (draw-sprite renderer
+                          :ball
+                          (+ 10 (* (+ ball-side 3) l))
+                          10))
         (draw-rect renderer
                    (board-x board)
                    (- 480 20)
