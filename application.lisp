@@ -53,11 +53,15 @@
           (add-state app 'menu-state :main-menu)
           (add-state app 'game-state :game)
           (add-state app 'game-menu-state :game-menu)
-          (add-font renderer :default
-                    "./font3.png"
-                    "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "
-                    40 40
-                    :r 0 :g 0 :b 0)
+          (let ((alphabet "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
+            (add-font renderer :default
+                      "./font3.png"
+                      alphabet
+                      40 40)
+            (add-font renderer :small
+                      "./font-small.png"
+                      alphabet
+                      10 10))
           (add-sprite renderer :ball "./ball.png")
           (add-sprite renderer :brick "./kirpich.bmp")
           (with-slots ((state current-state)) app
