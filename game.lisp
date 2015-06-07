@@ -31,18 +31,25 @@
     (when running
       (update-board board)
       (mapcar #'update-ball ball-list)
-      (mapcar (lambda (ball)
-                (mapcar
-                 (lambda (brick)
-                   (let ((collision-list
-                          (detect-collision ball brick
-                                            renderer)))
-                     (if collision-list (process-collision renderer
-                                                           ball
-                                                           brick-list
-                                                           (car collision-list)))))
-                 brick-list))
-              ball-list))))
+      (mapcar
+       (lambda (ball)
+         (mapcar
+          (lambda (brick)
+            (mapc (lambda (collision)
+                    (process-collision renderer
+                                       ball
+                                       brick-list
+                                       collision))
+                  (let ((collision-list (detect-collision ball brick
+                                                          renderer)))
+                    (delete-if-not (lambda (a)
+                                     (equal
+                                      a
+                                      (cadar collision-list)))
+                                   collision-list
+                                   :key #'cadr))))
+          brick-list))
+       ball-list))))
 
 (defmethod draw ((game game-state))
   (with-slots (renderer brick-list ball-list board lifes score) game
