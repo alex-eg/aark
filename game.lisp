@@ -35,20 +35,21 @@
        (lambda (ball)
          (mapcar
           (lambda (brick)
-            (mapc (lambda (collision)
-                    (process-collision renderer
-                                       ball
-                                       brick-list
-                                       collision))
-                  (let ((collision-list (detect-collision ball brick
-                                                          renderer)))
-                    (incf score (length collision-list))
-                    (delete-if-not (lambda (a)
-                                     (equal
-                                      a
-                                      (cadar collision-list)))
-                                   collision-list
-                                   :key #'cadr))))
+            (mapc
+             (lambda (collision)
+               (process-collision renderer
+                                  ball
+                                  brick-list
+                                  collision))
+             (let ((collision-list (detect-collision ball brick
+                                                     renderer)))
+               (incf score (length collision-list))
+               (delete-if-not (lambda (a)
+                                (equal
+                                 a
+                                 (cadar collision-list)))
+                              collision-list
+                              :key #'cadr))))
           brick-list))
        ball-list))))
 
@@ -152,8 +153,10 @@
           ((> y 470) (setf y 470)
            (setf dy (- dy)))
           ((< x 0) (game-over x)
+           (setf x (- x dx))
            (setf dx (- dx)))
-          ((< y 0) (setf y 0)
+          ((< y 0)
+           (setf y (- y dy))
            (setf dy (- dy))))
     (setf (ball-x ball) x)
     (setf (ball-y ball) y)
@@ -161,7 +164,7 @@
     (setf (ball-dy ball) dy)))
 
 (defun game-over (x)
-  (setf x 0))
+  )
 
 (defun game-unpause (game)
   (setf (slot-value game 'running) t))
