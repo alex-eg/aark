@@ -80,6 +80,9 @@
                           :ball
                           (+ 10 (* (+ ball-side 3) l))
                           10))
+        ;; draw score
+        (write-text renderer (format nil "ОЧКИ: ~3d" score)
+                   :small :x 540 :y 10)
         ;; draw board
         (draw-rect renderer
                    (board-x board)
