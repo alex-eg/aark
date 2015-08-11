@@ -61,8 +61,6 @@
              (bh (sdl2:texture-height brick-texture))
              (ball-side (sdl2:texture-height ball-texture)))
         (draw-rect renderer 0 0 640 480
-                   0 0 0 255)
-        (draw-rect renderer 0 0 640 480
                    69 69 69 255)
         (loop
            for b in brick-list
