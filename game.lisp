@@ -27,7 +27,7 @@
     (start-ball (car ball-list))))
 
 (defmethod update ((game game-state))
-  (with-slots (renderer running board ball-list brick-list) game
+  (with-slots (renderer score running board ball-list brick-list) game
     (when running
       (update-board board)
       (mapcar #'update-ball ball-list)
@@ -42,6 +42,7 @@
                                        collision))
                   (let ((collision-list (detect-collision ball brick
                                                           renderer)))
+                    (incf score (length collision-list))
                     (delete-if-not (lambda (a)
                                      (equal
                                       a
