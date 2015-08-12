@@ -27,7 +27,7 @@
     (start-ball (car ball-list))))
 
 (defmethod update ((game game-state))
-  (with-slots (renderer running board ball-list brick-list) game
+  (with-slots (renderer score running board ball-list brick-list) game
     (when running
       (update-board board)
       (mapcar #'update-ball ball-list)
@@ -35,19 +35,21 @@
        (lambda (ball)
          (mapcar
           (lambda (brick)
-            (mapc (lambda (collision)
-                    (process-collision renderer
-                                       ball
-                                       brick-list
-                                       collision))
-                  (let ((collision-list (detect-collision ball brick
-                                                          renderer)))
-                    (delete-if-not (lambda (a)
-                                     (equal
-                                      a
-                                      (cadar collision-list)))
-                                   collision-list
-                                   :key #'cadr))))
+            (mapc
+             (lambda (collision)
+               (process-collision renderer
+                                  ball
+                                  brick-list
+                                  collision))
+             (let ((collision-list (detect-collision ball brick
+                                                     renderer)))
+               (incf score (length collision-list))
+               (delete-if-not (lambda (a)
+                                (equal
+                                 a
+                                 (cadar collision-list)))
+                              collision-list
+                              :key #'cadr))))
           brick-list))
        ball-list))))
 
@@ -61,24 +63,29 @@
              (bh (sdl2:texture-height brick-texture))
              (ball-side (sdl2:texture-height ball-texture)))
         (draw-rect renderer 0 0 640 480
-                   0 0 0 255)
-        (draw-rect renderer 0 0 640 480
                    69 69 69 255)
+        ;; draw all bricks
         (loop
            for b in brick-list
            do (draw-sprite renderer
                            :brick
                            (* (car b) bw)
                            (+ 40 (* (cdr b) bh))))
+        ;; draw ball
         (draw-sprite renderer
                      :ball
                      (ball-x ball)
                      (ball-y ball))
+        ;; draw remaining lifes
         (loop for l from 0 to (1- lifes) do
              (draw-sprite renderer
                           :ball
                           (+ 10 (* (+ ball-side 3) l))
                           10))
+        ;; draw score
+        (write-text renderer (format nil "ОЧКИ: ~3d" score)
+                   :small :x 540 :y 10)
+        ;; draw board
         (draw-rect renderer
                    (board-x board)
                    (- 480 20)
@@ -146,8 +153,10 @@
           ((> y 470) (setf y 470)
            (setf dy (- dy)))
           ((< x 0) (game-over x)
+           (setf x (- x dx))
            (setf dx (- dx)))
-          ((< y 0) (setf y 0)
+          ((< y 0)
+           (setf y (- y dy))
            (setf dy (- dy))))
     (setf (ball-x ball) x)
     (setf (ball-y ball) y)
@@ -155,7 +164,7 @@
     (setf (ball-dy ball) dy)))
 
 (defun game-over (x)
-  (setf x 0))
+  )
 
 (defun game-unpause (game)
   (setf (slot-value game 'running) t))
