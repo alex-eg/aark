@@ -181,14 +181,18 @@
            (top    (cons brick.lt brick.rt))
            (bottom (cons brick.lb brick.rb))
 
+           (ball-side (sprite-width renderer :ball))
+           (ball-x (- (ball-x ball) (/ ball-side 2)))
+           (ball-y (- (ball-y ball) (/ ball-side 2)))
            (ball-path (cons
-                       (cons (ball-x ball) (ball-y ball))
-                       (cons (- (ball-x ball)
+                       (cons ball-x ball-y)
+                       (cons (- ball-x
                                 (ball-dx ball))
-                             (- (ball-y ball)
+                             (- ball-y
                                 (ball-dy ball))))))
       (remove-if-not (lambda (side) (intersectp ball-path side))
-                     (mapcar (lambda (int side) (list int brick side))
+                     (mapcar (lambda (int side)
+                               (list int brick side))
                              (list left right top bottom)
                              (list :left :right :top :bottom))
                      :key #'car))))
@@ -235,6 +239,10 @@
                  (or (and (= h 0) 6) h)
                  255 0 0 255)
       (delete brick brick-list)
+      (setf (ball-x ball) (- (ball-x ball)
+                             (ball-dx ball))
+            (ball-y ball) (- (ball-y ball)
+                             (ball-dy ball)))
       (cond ((or (eql side :left)
                  (eql side :right))
              (setf (ball-dx ball)
