@@ -83,6 +83,7 @@
 (define-condition load-font-failed (error)
   ((path :initarg :path :reader path))
   (:report (lambda (condition stream)
+             (declare (ignore condition))
              (format stream "Failed loading font bmp: ~S~%"
                      (sdl2-ffi.functions:sdl-get-error)))))
 
