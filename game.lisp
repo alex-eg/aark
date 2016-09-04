@@ -1,7 +1,5 @@
 (in-package :aark)
 
-(defstruct ball
-  x y dx dy)
 ;;; State interface (state.lisp):
 ;; (defclass state ()
 ;;   ((name     :initform (error "Name must be set")
@@ -20,6 +18,21 @@
 ;; (defmethod init ((state state)))
 ;; (defmethod update ((state state)))
 
+(defstruct
+    (ball
+      (:constructor %make-ball (x y dx dy sprite)))
+  x y dx dy
+  w h)
+
+(defun make-ball (&key (sprite (error "Sprite must be set!"))
+                    (x 0) (y 0) (dx 0) (dy 0))
+  (let ((b (%make-ball x y
+                       dx dy
+                       sprite)))
+    (setf (ball-w b) (sdl2:surface-width (get-sprite-texture sprite)))
+    (setf (ball-h b) (sdl2:surface-height (get-sprite-texture sprite)))
+    b))
+
 (defstruct board
   length x dx base-length r g b a)
 
@@ -33,7 +46,9 @@
                      :x 40 :dx 0
                      :r 60 :g 150 :b 90 :a 255))
    (brick-list :initform '())
-   (ball-list  :initform (list (make-ball :x 320 :y 240 :dx -1.0 :dy 1.0)))
+   (ball-list :initform (list (make-ball :x 320 :y 240
+                                         :dx -1.0 :dy 1.0
+                                         :sprite :ball)))
    (bonus-list :initform '())
    (running :initform nil)))
 
@@ -158,7 +173,9 @@
   (let* ((dx (ball-dx ball))
          (dy (ball-dy ball))
          (x (+ (ball-x ball) dx))
-         (y (+ (ball-y ball) dy)))
+         (y (+ (ball-y ball) dy))
+         (w (ball-w ball))
+         (h (ball-h ball)))
     (cond ((> x 630) (setf x 630)
            (setf dx (- dx)))
           ((> y 470) (setf y 470)
