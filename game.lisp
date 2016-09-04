@@ -7,18 +7,18 @@
   length x dx base-length r g b a)
 
 (defclass game-state (state)
-  ((lifes    :initform 3)
+  ((lifes :initform 3)
    (runningp :initform t)
-   (score    :initform 0)
-   (board    :initform (make-board
-                        :base-length 20
-                        :length 2
-                        :x 40 :dx 0
-                        :r 60 :g 150 :b 90 :a 255))
+   (score :initform 0)
+   (board :initform (make-board
+                     :base-length 20
+                     :length 2
+                     :x 40 :dx 0
+                     :r 60 :g 150 :b 90 :a 255))
    (brick-list :initform '())
    (ball-list  :initform (list (make-ball :x 320 :y 240 :dx -1.0 :dy 1.0)))
    (bonus-list :initform '())
-   (running    :initform nil)))
+   (running :initform nil)))
 
 (defmethod init ((game game-state))
   (with-slots (brick-list running ball-list) game

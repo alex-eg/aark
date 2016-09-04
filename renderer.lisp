@@ -2,9 +2,10 @@
 
 (defclass renderer ()
   ((sdl2-renderer :initform (error "Renderer must be set")
-                  :initarg :renderer)
-   (sprites       :initform '())
-   (fonts         :initform '())))
+                  :initarg :renderer
+                  :accessor sdl2-renderer)
+   (sprites :initform (list) :accessor renderer-sprites)
+   (fonts :initform (list) :accessor renderer-fonts)))
 
 (defun load-texture (renderer path-to-file)
   (sdl2:create-texture-from-surface

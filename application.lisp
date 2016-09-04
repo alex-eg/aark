@@ -3,10 +3,10 @@
 (defparameter +delay+ (/ 1000.0 30.0))	; fps
 
 (defclass application ()
-  ((state-hash    :initform (make-hash-table))
+  ((state-hash :initform (make-hash-table))
    (current-state :initform nil)
-   (renderer      :initform nil)
-   (running       :initform nil)))
+   (renderer :initform nil)
+   (running :initform nil)))
 
 (defun add-state (app state-class state-name)
   (with-slots ((states state-hash)
