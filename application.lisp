@@ -51,9 +51,6 @@
                current-frame)
           (set-current-renderer renderer)
           (setf (slot-value app 'renderer) renderer)
-          (add-state app 'menu-state :main-menu)
-          (add-state app 'game-state :game)
-          (add-state app 'game-menu-state :game-menu)
           (let ((alphabet
                  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
             (add-font :default
@@ -66,6 +63,11 @@
                       10 10))
           (add-sprite :ball "./ball.png")
           (add-sprite :brick "./kirpich.bmp")
+
+          (add-state app 'menu-state :main-menu)
+          (add-state app 'game-state :game)
+          (add-state app 'game-menu-state :game-menu)
+
           (with-slots ((state current-state)) app
             (sdl2:with-event-loop (:method :poll)
               (:keydown
