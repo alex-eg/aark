@@ -98,16 +98,17 @@
     (with-slots (fonts) *renderer*
       (setf fonts (acons
                    font-name
-                   (make-font :sprite font-sprite
-                              :alphabet (loop for a across alphabet
-                                           with alphabet-hash = (make-hash-table)
-                                           counting a into i
-                                           do (setf (gethash a alphabet-hash) (1- i))
-                                           finally (return alphabet-hash))
-                              :rows rows
-                              :cols cols
-                              :cell-w cell-w
-                              :cell-h cell-h)
+                   (make-font
+                    :sprite font-sprite
+                    :alphabet (loop for a across alphabet
+                                 with alphabet-hash = (make-hash-table)
+                                 counting a into i
+                                 do (setf (gethash a alphabet-hash) (1- i))
+                                 finally (return alphabet-hash))
+                    :rows rows
+                    :cols cols
+                    :cell-w cell-w
+                    :cell-h cell-h)
                    fonts))
       t)))
 
