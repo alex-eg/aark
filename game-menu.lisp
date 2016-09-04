@@ -4,27 +4,26 @@
   ((choise :initform 0)))
 
 (defmethod draw ((menu game-menu-state))
-  (with-slots ((ren renderer)
-               (app application)
+  (with-slots ((app application)
                choise) menu
     (draw (get-state app :game))
-    (draw-rect ren 0 0 640 480 255 255 255 12)
-    (draw-rect ren 0 180 640 120 255 255 255 32)
+    (draw-rect 0 0 640 480 255 255 255 12)
+    (draw-rect 0 180 640 120 255 255 255 32)
 
     (if (= choise 0)
-        (draw-rect ren 60 205 520 35
+        (draw-rect 60 205 520 35
                    180 95 215 255)
-        (draw-rect ren 60 205 520 35
+        (draw-rect 60 205 520 35
                    110 44 138 255))
-    (write-text ren "ПРОДОЛЖИТЬ" :default
+    (write-text "ПРОДОЛЖИТЬ" :default
                 :centered t :x 640 :y 200)
     (if (= choise 1)
-        (draw-rect ren 60 245 520 35
+        (draw-rect 60 245 520 35
                    180 95 215 255)
-        (draw-rect ren 60 245 520 35
+        (draw-rect 60 245 520 35
                    110 44 138 255))
 
-    (write-text ren "ВЫХОД" :default
+    (write-text "ВЫХОД" :default
                 :centered t :x 640 :y 240)))
 
 (defmethod process-input ((menu game-menu-state) direction keysym)

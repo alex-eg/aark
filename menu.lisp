@@ -44,33 +44,32 @@
                     3)))))
 
 (defmethod draw ((menu menu-state))
-  (with-slots ((ren renderer)
-               choise) menu
-    (draw-rect ren 0 0 640 480 83 3 116 255)
+  (with-slots (choise) menu
+    (draw-rect 0 0 640 480 83 3 116 255)
     (if (= choise 0)
-        (draw-rect ren 60 305 520 35
+        (draw-rect 60 305 520 35
                    180 95 215 255)
-        (draw-rect ren 60 305 520 35
+        (draw-rect 60 305 520 35
                    110 44 138 255))
-    (write-text ren "СТАРТ" :default
+    (write-text "СТАРТ" :default
                 :centered t
                 :x 640
                 :y 300)
     (if (= choise 1)
-        (draw-rect ren 60 345 520 35
+        (draw-rect 60 345 520 35
                    180 95 215 255)
-        (draw-rect ren 60 345 520 35
+        (draw-rect 60 345 520 35
                    110 44 138 255))
-    (write-text ren "ВЫСОКИЕ ОЧКИ" :default
+    (write-text "ВЫСОКИЕ ОЧКИ" :default
                 :centered t
                 :x 640
                 :y 340)
     (if (= choise 2)
-        (draw-rect ren 60 385 520 35
+        (draw-rect 60 385 520 35
                    180 95 215 255)
-        (draw-rect ren 60 385 520 35
+        (draw-rect 60 385 520 35
                    110 44 138 255))
-    (write-text ren "ВЫХОД" :default
+    (write-text "ВЫХОД" :default
                 :centered t
                 :x 640
                 :y 380)))

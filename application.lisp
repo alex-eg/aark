@@ -49,21 +49,23 @@
                                         :presentvsync))
         (let* ((renderer (make-instance 'renderer :renderer ren))
                current-frame)
+          (set-current-renderer renderer)
           (setf (slot-value app 'renderer) renderer)
           (add-state app 'menu-state :main-menu)
           (add-state app 'game-state :game)
           (add-state app 'game-menu-state :game-menu)
-          (let ((alphabet "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
-            (add-font renderer :default
+          (let ((alphabet
+                 "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
+            (add-font :default
                       "./font3.png"
                       alphabet
                       40 40)
-            (add-font renderer :small
+            (add-font :small
                       "./font-small.png"
                       alphabet
                       10 10))
-          (add-sprite renderer :ball "./ball.png")
-          (add-sprite renderer :brick "./kirpich.bmp")
+          (add-sprite :ball "./ball.png")
+          (add-sprite :brick "./kirpich.bmp")
           (with-slots ((state current-state)) app
             (sdl2:with-event-loop (:method :poll)
               (:keydown

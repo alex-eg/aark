@@ -27,7 +27,7 @@
     (start-ball (car ball-list))))
 
 (defmethod update ((game game-state))
-  (with-slots (renderer score running board ball-list brick-list) game
+  (with-slots (score running board ball-list brick-list) game
     (when running
       (update-board board)
       (mapcar #'update-ball ball-list)
@@ -37,12 +37,10 @@
           (lambda (brick)
             (mapc
              (lambda (collision)
-               (process-collision renderer
-                                  ball
+               (process-collision ball
                                   brick-list
                                   collision))
-             (let ((collision-list (detect-collision ball brick
-                                                     renderer)))
+             (let ((collision-list (detect-collision ball brick)))
                (incf score (length collision-list))
                (delete-if-not (lambda (a)
                                 (equal
@@ -54,40 +52,36 @@
        ball-list))))
 
 (defmethod draw ((game game-state))
-  (with-slots (renderer brick-list ball-list board lifes score) game
-    (with-slots (sprites) renderer
+  (with-slots (brick-list ball-list board lifes score) game
+    (with-slots (sprites)
       (let* ((ball (car ball-list))
-             (ball-texture (get-sprite-texture renderer :ball))
-             (brick-texture (get-sprite-texture renderer :brick))
+             (ball-texture (get-sprite-texture :ball))
+             (brick-texture (get-sprite-texture :brick))
              (bw (sdl2:texture-width brick-texture))
              (bh (sdl2:texture-height brick-texture))
              (ball-side (sdl2:texture-height ball-texture)))
-        (draw-rect renderer 0 0 640 480
+        (draw-rect 0 0 640 480
                    69 69 69 255)
         ;; draw all bricks
         (loop
            for b in brick-list
-           do (draw-sprite renderer
-                           :brick
+           do (draw-sprite :brick
                            (* (car b) bw)
                            (+ 40 (* (cdr b) bh))))
         ;; draw ball
-        (draw-sprite renderer
-                     :ball
+        (draw-sprite :ball
                      (ball-x ball)
                      (ball-y ball))
         ;; draw remaining lifes
         (loop for l from 0 to (1- lifes) do
-             (draw-sprite renderer
-                          :ball
+             (draw-sprite :ball
                           (+ 10 (* (+ ball-side 3) l))
                           10))
         ;; draw score
-        (write-text renderer (format nil "ОЧКИ: ~3d" score)
-                   :small :x 540 :y 10)
+        (write-text (format nil "ОЧКИ: ~3d" score)
+                    :small :x 540 :y 10)
         ;; draw board
-        (draw-rect renderer
-                   (board-x board)
+        (draw-rect (board-x board)
                    (- 480 20)
                    (* (board-length board)
                       (board-base-length board))
@@ -173,9 +167,9 @@
   (setf (ball-dx ball) (- 10 (random 20)))
   (setf (ball-dy ball) -5))
 
-(defun detect-collision (ball brick renderer)
-  (let ((brick.w (sprite-width renderer :brick))
-        (brick.h (sprite-height renderer :brick)))
+(defun detect-collision (ball brick)
+  (let ((brick.w (sprite-width :brick))
+        (brick.h (sprite-height :brick)))
     (let* ((brick.lt (cons (* brick.w (car brick))
                            (+ 40 (* brick.h (cdr brick)))))
            (brick.lb (cons (car brick.lt)
@@ -190,7 +184,7 @@
            (top    (cons brick.lt brick.rt))
            (bottom (cons brick.lb brick.rb))
 
-           (ball-side (sprite-width renderer :ball))
+           (ball-side (sprite-width :ball))
            (ball-x (- (ball-x ball) (/ ball-side 2)))
            (ball-y (- (ball-y ball) (/ ball-side 2)))
            (ball-path (cons
@@ -237,13 +231,13 @@
               (and (eql o3 :collinear) (on-segment p2 p1 q2))
               (and (eql o4 :collinear) (on-segment p2 q1 q2))))))))
 
-(defun process-collision (renderer ball brick-list collision)
+(defun process-collision (ball brick-list collision)
   (destructuring-bind (int brick side) collision
     (let* ((x (caar int))
            (y (cdar int))
            (w (- (cadr int) x))
            (h (- (cddr int) y)))
-      (draw-rect renderer x y
+      (draw-rect x y
                  (or (and (= w 0) 4) w)
                  (or (and (= h 0) 6) h)
                  255 0 0 255)
