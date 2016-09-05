@@ -25,7 +25,7 @@
        (if (assoc sprite-name sprites)
            (error "Sprite with name ~a already registered" sprite-name))
        (let ((texture (load-texture sdl2-renderer path-to-file)))
-         (sdl2:set-texture-blend-mode *renderer* texture blend-mode)
+         (sdl2:set-texture-blend-mode texture blend-mode)
          (setf sprites
                (acons sprite-name
                       texture
@@ -67,7 +67,7 @@
          (sdl2-renderer (slot-value *renderer* 'sdl2-renderer))
          (w (round (* scale (sdl2:texture-width texture))))
          (h (round (* scale (sdl2:texture-height texture)))))
-    (sdl2:set-texture-blend-mode sdl2-renderer texture blendmode)
+    (sdl2:set-texture-blend-mode texture blendmode)
     (sdl2:render-copy sdl2-renderer
                       texture
                       :dest-rect (sdl2:make-rect x y w h))))
