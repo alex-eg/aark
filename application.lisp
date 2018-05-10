@@ -61,15 +61,15 @@
           (let ((alphabet
                  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
             (add-font :default
-                      (res "font3.png")
+                      (res "data/font3.png")
                       alphabet
                       40 40)
             (add-font :small
-                      (res "font-small.png")
+                      (res "data/font-small.png")
                       alphabet
                       10 10))
-          (add-sprite :ball (res "ball.png"))
-          (add-sprite :brick (res "kirpich.bmp"))
+          (add-sprite :ball (res "data/ball.png"))
+          (add-sprite :brick (res "data/kirpich.bmp"))
 
           (add-state app 'menu-state :main-menu)
           (add-state app 'game-state :game)
