@@ -1,6 +1,13 @@
 (in-package :aark)
 
-(defparameter +delay+ (/ 1000.0 30.0))	; fps
+(defparameter +delay+ (/ 1000.0 30.0)
+  "Frames per second.")
+
+;; TODO: provide something like config package with resource path
+;;       mappings and path-related routines. Now I can only hardcode them.
+(defun res (resource-file-name)
+  "Creates absolute path to resource by it's local filename."
+  (merge-pathnames resource-file-name +root+))
 
 (defclass application ()
   ((state-hash :initform (make-hash-table))
@@ -54,15 +61,15 @@
           (let ((alphabet
                  "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ1234567890.,-!?\"№<>:; "))
             (add-font :default
-                      "./font3.png"
+                      (res "data/font3.png")
                       alphabet
                       40 40)
             (add-font :small
-                      "./font-small.png"
+                      (res "data/font-small.png")
                       alphabet
                       10 10))
-          (add-sprite :ball "./ball.png")
-          (add-sprite :brick "./kirpich.bmp")
+          (add-sprite :ball (res "data/ball.png"))
+          (add-sprite :brick (res "data/kirpich.bmp"))
 
           (add-state app 'menu-state :main-menu)
           (add-state app 'game-state :game)
