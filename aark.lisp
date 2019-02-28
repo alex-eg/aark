@@ -1,4 +1,4 @@
-(in-package #:aark)
+(in-package :aark)
 
 (defun main (&key (core-is-root nil))
   (defparameter +root+

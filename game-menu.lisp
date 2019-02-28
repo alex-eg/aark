@@ -1,4 +1,4 @@
-(in-package #:aark)
+(in-package :aark)
 
 (defclass game-menu-state (state)
   ((choise :initform 0)))

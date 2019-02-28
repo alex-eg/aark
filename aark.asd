@@ -1,4 +1,4 @@
-(in-package #:cl-user)
+(in-package :cl-user)
 
 (asdf:defsystem :aark
   :depends-on (:sdl2
