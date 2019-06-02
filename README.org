@@ -6,7 +6,7 @@
   - Let quicklisp know about aark system:
   #+BEGIN_SRC sh
     $ # clone directly to local-projects
-    $ git clone https://github.com/alex-eg/aark.git ~/quicklisp/local-projects/
+    $ git clone https://github.com/alex-eg/aark.git ~/quicklisp/local-projects/aark
     $ # or create symlink
     $ ln -s /path/to/aark ~/quicklisp/local-projects/aark
   #+END_SRC
